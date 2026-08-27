@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════
+   Shaula Tulum — paleta y tipografía
+
+   Decisión de diseño: la casa se compromete con UN mundo visual, el de
+   la luz del mediodía sobre piedra caliza. No hay modo oscuro: un
+   catálogo de lino crudo en negro traiciona el concepto. Por eso todos
+   los colores se pintan explícitos (nada transparente que herede el
+   fondo del sistema operativo).
+
+   El acento es MADERA (#7d5a3c), el tono del chicozapote con el que se
+   hacen las vigas y los mostradores de la zona. Es tierra sin caer en el
+   terracota anaranjado: se apoya en la arena en vez de pelearse con ella.
+   ══════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-cal:        #faf6ef;  /* piedra caliza — fondo de página     */
+  --color-cal-hondo:  #f3ecdf;  /* segundo plano, secciones alternadas */
+  --color-arena:      #e8dcc8;  /* arena seca — bordes, muestras       */
+  --color-arena-hondo:#d8c8ac;  /* arena mojada                        */
+  --color-tinta:      #2a2622;  /* casi negro cálido — texto           */
+  --color-sombra:     #6b6157;  /* gris cálido — texto secundario      */
+  --color-madera:     #7d5a3c;  /* acento: madera de chicozapote       */
+  --color-madera-claro:#9b7551;
+  --color-henequen:   #a89070;  /* fibra de sisal — acento secundario  */
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-cuerpo:  var(--font-karla), ui-sans-serif, system-ui, sans-serif;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--color-cal);
+  color: var(--color-tinta);
+  font-family: var(--font-cuerpo);
+  font-size: 16px;
+  line-height: 1.6;
+  /* 450 en vez de 400: el pedido fue "un poquitito más gruesa" para que
+     el texto tenga más presencia sobre el fondo claro sin volverse
+     pesado. Karla es variable, así que 450 es un peso real, no una
+     interpolación falsa del navegador. */
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--color-madera); color: var(--color-cal); }
+
+:focus-visible {
+  outline: 2px solid var(--color-madera);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-wrap: balance;
+  letter-spacing: -0.015em;
+}
+
+/* Ojo tipográfico: Fraunces tiene eje óptico variable. En tamaños
+   grandes conviene subirlo para que los remates se afinen. */
+.display-xl { font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 144; }
+.display-md { font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 48; }
+
+/* Etiqueta en versalitas: el mismo tratamiento en toda la casa. */
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-sombra);
+  font-weight: 700;
+}
+
+/* Medida de lectura cómoda: ~65 caracteres. */
+.medida { max-width: 34rem; }
+
+/* ── Muestra de tela ──
+   Todavía no hay fotos de producto. En vez de un cuadro gris roto, cada
+   prenda muestra su TELA: una trama de lino dibujada en CSS sobre el
+   tono real de la prenda. Se lee como una muestra de género, que es
+   información verdadera sobre el producto, no un relleno. */
+.trama {
+  position: relative;
+  background-image:
+    repeating-linear-gradient(90deg,  rgb(0 0 0 / 0.045) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(0deg,   rgb(0 0 0 / 0.035) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg,  rgb(255 255 255 / 0.30) 0 1px, transparent 1px 9px);
+}
+.trama::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 30% 15%, rgb(255 255 255 / 0.28), transparent 62%);
+  pointer-events: none;
+}
+
+/* Rail horizontal con scroll propio — el body nunca se mueve de lado. */
+.rail {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-arena-hondo) transparent;
+  padding-bottom: 0.75rem;
+}
+.rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Tira de filtros ──
+   El pedido fue que la botonera dejara de ser un bloque enorme. En vez de
+   dejar que los chips envuelvan en tres o cuatro filas, van en UNA sola
+   línea que scrollea de costado. En el teléfono eso es la diferencia
+   entre media pantalla de botones y una franja de 36px. */
+.tira {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+  /* que el primer y último chip no queden pegados al borde en móvil */
+  padding-inline: 1px;
+}
+.tira::-webkit-scrollbar { display: none; }
+.tira > * { flex: 0 0 auto; scroll-snap-align: start; }
+
+/* Difuminado al borde derecho: pista visual de que hay más para scrollear. */
+.tira-envoltura { position: relative; }
+.tira-envoltura::after {
+  content: "";
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 2rem;
+  background: linear-gradient(to right, transparent, var(--color-cal));
+  pointer-events: none;
+}
