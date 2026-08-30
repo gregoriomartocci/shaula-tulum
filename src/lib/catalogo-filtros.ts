@@ -1,63 +1,97 @@
-import type { Categoria, OrdenSlug, Producto } from "@/data/productos";
+import type { Categoria, OrdenSlug, Producto, Variante } from "@/data/productos";
 
 /* Filtrado y orden del catálogo, sin React.
 
-   Vivía adentro de un useMemo en CatalogoCliente, así que no había forma de
-   probarlo sin montar el componente. Acá es una función pura: entran productos
-   y criterios, salen productos. */
+   El catálogo no lista tres productos: lista cada COLOR de cada producto,
+   porque eso es lo que un visitante viene a mirar. Una ficha es entonces
+   el par (prenda, color) — la camisa lila, el pantalón olivo — y este
+   archivo la arma, la filtra y la ordena.
 
-export type RangoSlug = "todos" | "hasta-60" | "60-90" | "desde-90";
+   Vive fuera del componente para poder probarlo sin montar React: entran
+   productos y criterios, salen fichas. */
 
-export const RANGOS: { slug: RangoSlug; nombre: string; test: (p: Producto) => boolean }[] = [
-  { slug: "todos",    nombre: "Cualquier precio", test: () => true },
-  { slug: "hasta-60", nombre: "Hasta $60",        test: (p) => p.precio <= 60 },
-  { slug: "60-90",    nombre: "$60 a $90",        test: (p) => p.precio > 60 && p.precio <= 90 },
-  { slug: "desde-90", nombre: "Más de $90",       test: (p) => p.precio > 90 },
-];
-
-/** Un producto "destacado" pesa más si es más vendido que si es nuevo. */
-export function pesoDestacado(p: Producto) {
-  return (p.masVendido ? 4 : 0) + (p.trending ? 2 : 0) + (p.nuevo ? 1 : 0);
+/** Un color de una prenda, listo para mostrar como tarjeta. */
+export interface Ficha {
+  producto: Producto;
+  variante: Variante;
+  /** Clave estable para React y para la URL: "camisa-lila". */
+  clave: string;
 }
 
 export interface Criterios {
   busqueda: string;
   categoria: Categoria | "todas";
-  rango: RangoSlug;
   orden: OrdenSlug;
 }
 
-/** La búsqueda mira nombre, tela, descripción y colores — no sólo el nombre. */
-function coincideBusqueda(p: Producto, q: string) {
-  if (!q) return true;
-  return [p.nombre, p.tela, p.descripcion, ...p.colores]
-    .join(" ").toLowerCase().includes(q);
+/** El orden natural de las prendas: como se viste uno, de arriba abajo. */
+const ORDEN_PRENDA: Categoria[] = ["camisas", "pantalones", "conjuntos"];
+
+export function fichas(productos: Producto[]): Ficha[] {
+  return productos.flatMap((producto) =>
+    producto.variantes.map((variante) => ({
+      producto,
+      variante,
+      clave: `${producto.id}-${variante.slug}`,
+    })),
+  );
 }
 
-export function filtrarYOrdenar(productos: Producto[], criterios: Criterios): Producto[] {
-  const q = criterios.busqueda.trim().toLowerCase();
-  const testRango = RANGOS.find((r) => r.slug === criterios.rango)!.test;
+/* La búsqueda mira el color de ESTA ficha, el nombre de la prenda, la tela
+   y la descripción — alguien que escribe "algodón", "lila" o "conjunto"
+   tiene que encontrar algo.
 
-  const filtrados = productos.filter((p) => {
-    if (criterios.categoria !== "todas" && p.categoria !== criterios.categoria) return false;
-    if (!testRango(p)) return false;
-    return coincideBusqueda(p, q);
+   Ojo con lo que NO mira: los otros colores de la misma prenda. Si los
+   mirara, buscar "lila" traería las once camisas (todas comparten la lista
+   de colores) en vez de la camisa lila, que es justamente la tarjeta que
+   la persona está buscando. */
+function coincide(f: Ficha, q: string) {
+  if (!q) return true;
+  return [
+    f.variante.nombre,
+    f.producto.nombre,
+    f.producto.subtitulo,
+    f.producto.tela,
+    f.producto.descripcion,
+  ].join(" ").toLowerCase().includes(q);
+}
+
+export function filtrarYOrdenar(productos: Producto[], criterios: Criterios): Ficha[] {
+  const q = criterios.busqueda.trim().toLowerCase();
+
+  const filtradas = fichas(productos).filter((f) => {
+    if (criterios.categoria !== "todas" && f.producto.categoria !== criterios.categoria) return false;
+    return coincide(f, q);
   });
 
-  // Copia antes de ordenar: sort muta, y el array de productos viene del servidor.
-  const ordenado = [...filtrados];
-  const porNombre = (a: Producto, b: Producto) => a.nombre.localeCompare(b.nombre, "es");
+  const porColor = (a: Ficha, b: Ficha) =>
+    a.variante.nombre.localeCompare(b.variante.nombre, "es");
 
-  switch (criterios.orden) {
-    case "precio-asc":  ordenado.sort((a, b) => a.precio - b.precio); break;
-    case "precio-desc": ordenado.sort((a, b) => b.precio - a.precio); break;
-    case "nombre":      ordenado.sort(porNombre); break;
-    case "nuevos":      ordenado.sort((a, b) => Number(!!b.nuevo) - Number(!!a.nuevo) || porNombre(a, b)); break;
-    default:            ordenado.sort((a, b) => pesoDestacado(b) - pesoDestacado(a) || porNombre(a, b));
+  // Copia antes de ordenar: sort muta, y el array viene del servidor.
+  const ordenadas = [...filtradas];
+  if (criterios.orden === "color") {
+    ordenadas.sort((a, b) => porColor(a, b) || ORDEN_PRENDA.indexOf(a.producto.categoria) - ORDEN_PRENDA.indexOf(b.producto.categoria));
+  } else {
+    // Por prenda: respeta el orden en que vienen los colores de cada
+    // prenda (que es el orden pensado en el archivo de datos).
+    ordenadas.sort(
+      (a, b) =>
+        ORDEN_PRENDA.indexOf(a.producto.categoria) - ORDEN_PRENDA.indexOf(b.producto.categoria) ||
+        a.producto.variantes.indexOf(a.variante) - b.producto.variantes.indexOf(b.variante),
+    );
   }
-  return ordenado;
+  return ordenadas;
 }
 
 export function hayFiltrosActivos(c: Criterios) {
-  return c.busqueda !== "" || c.categoria !== "todas" || c.rango !== "todos";
+  return c.busqueda !== "" || c.categoria !== "todas" || c.orden !== "prenda";
+}
+
+/** Cuántos colores hay de cada prenda, para los contadores del catálogo. */
+export function contarPorCategoria(productos: Producto[]) {
+  const cuenta = new Map<Categoria, number>();
+  for (const p of productos) {
+    cuenta.set(p.categoria, (cuenta.get(p.categoria) ?? 0) + p.variantes.length);
+  }
+  return cuenta;
 }

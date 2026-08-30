@@ -17,10 +17,19 @@ const karla = Karla({
   display: "swap",
 });
 
+/* Base para las direcciones absolutas de Open Graph. En Vercel la da la
+   plataforma; en local cae al puerto de desarrollo. */
+const BASE =
+  process.env.NEXT_PUBLIC_SITIO ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3200");
+
 export const metadata: Metadata = {
-  title: "Shaula Tulum · Lino y fibras naturales",
+  metadataBase: new URL(BASE),
+  title: "Shaula Tulum · Camisas, pantalones y conjuntos hechos a mano",
   description:
-    "Catálogo de ropa de lino, algodón crudo y fibras del Caribe mexicano. Piezas hechas a mano, pensadas para el calor y para durar diez veranos.",
+    "Catálogo de Shaula Tulum: camisa, pantalón y conjunto en gasa de algodón lavada, teñidos a mano en tandas cortas. Once colores de camisa, cinco de pantalón.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

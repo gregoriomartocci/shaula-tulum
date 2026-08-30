@@ -1,33 +1,49 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import Image from "next/image";
-import MuestraTela from "@/components/MuestraTela";
-import ProductoCard from "@/components/ProductoCard";
-import { CATEGORIAS } from "@/data/productos";
+import { notFound } from "next/navigation";
+import GaleriaPrenda from "@/components/GaleriaPrenda";
+import PrendaCard from "@/components/PrendaCard";
+import { CATEGORIAS, coloresDe, videosDe } from "@/data/productos";
 import { getProducto, getProductos } from "@/lib/catalogo";
+
+export async function generateStaticParams() {
+  const productos = await getProductos();
+  return productos.map((p) => ({ id: p.id }));
+}
 
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Metadata> {
   const { id } = await params;
   const p = await getProducto(id);
-  if (!p) return { title: "Pieza no encontrada · Shaula Tulum" };
-  return { title: `${p.nombre} · Shaula Tulum`, description: p.descripcion };
+  if (!p) return { title: "Prenda no encontrada · Shaula Tulum" };
+  return {
+    title: `${p.nombre} · Shaula Tulum`,
+    description: `${p.subtitulo}. ${p.variantes.length} colores: ${coloresDe(p).join(", ")}.`,
+    openGraph: { images: p.variantes[0]?.fotos[0] ? [p.variantes[0].fotos[0]] : [] },
+  };
 }
 
-export default async function ProductoPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function ProductoPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ color?: string }>;
+}) {
+  const [{ id }, { color }] = await Promise.all([params, searchParams]);
   const p = await getProducto(id);
   if (!p) notFound();
 
   const categoria = CATEGORIAS.find((c) => c.slug === p.categoria);
   const todas = await getProductos();
-  const relacionadas = todas.filter((x) => x.categoria === p.categoria && x.id !== p.id).slice(0, 4);
+  const otras = todas.filter((x) => x.id !== p.id);
+  const videos = videosDe(p);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-      <nav className="mb-8 text-[13px] text-sombra">
+      <nav className="mb-7 text-[13px] text-sombra">
         <Link href="/catalogo" className="hover:text-madera">Catálogo</Link>
         <span className="mx-2 text-arena-hondo">/</span>
         <Link href={`/catalogo?categoria=${p.categoria}`} className="hover:text-madera">
@@ -35,78 +51,113 @@ export default async function ProductoPage({ params }: { params: Promise<{ id: s
         </Link>
       </nav>
 
-      <div className="grid gap-10 md:grid-cols-2 md:gap-14">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[3px] ring-1 ring-inset ring-black/[0.07]">
-          {p.foto ? (
-            <Image
-              src={p.foto}
-              alt={p.nombre}
-              fill
-              priority
-              sizes="(max-width: 767px) 100vw, 50vw"
-              className="object-cover"
-            />
-          ) : (
-            <MuestraTela tono={p.tono} className="h-full w-full" />
-          )}
+      <header className="mb-8">
+        <p className="eyebrow">{categoria?.nombre}</p>
+        <h1 className="display-md mt-1.5 text-[32px] leading-tight text-tinta sm:text-[42px]">
+          {p.nombre}
+        </h1>
+        <p className="mt-1.5 text-[15px] text-sombra">{p.subtitulo}</p>
+      </header>
+
+      <GaleriaPrenda producto={p} colorInicial={color} />
+
+      {/* ══ La prenda, contada ══ */}
+      <section className="mt-16 grid gap-10 border-t border-arena pt-12 md:grid-cols-2 md:gap-14">
+        <div>
+          <p className="eyebrow">La prenda</p>
+          <p className="mt-3 text-[16px] leading-relaxed text-tinta">{p.descripcion}</p>
+          <p className="mt-5 text-[14px] leading-relaxed text-sombra">{p.cuidado}</p>
         </div>
 
-        <div className="md:pt-4">
-          <p className="eyebrow">{categoria?.nombre}</p>
-          <h1 className="display-md mt-1.5 text-[32px] leading-tight text-tinta sm:text-[40px]">
-            {p.nombre}
-          </h1>
+        <div>
+          <p className="eyebrow">Cómo está hecha</p>
+          <ul className="mt-3 space-y-2.5">
+            {p.detalles.map((d) => (
+              <li key={d} className="flex gap-3 text-[14.5px] leading-snug text-tinta">
+                <span className="mt-[9px] h-[3px] w-[3px] shrink-0 rounded-full bg-madera" aria-hidden />
+                {d}
+              </li>
+            ))}
+          </ul>
 
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <span className="text-[22px] tabular-nums text-tinta">${p.precio}</span>
-            {p.masVendido && (
-              <span className="rounded-full border border-madera/35 bg-madera/10 px-2.5 py-1 text-[11px] font-semibold text-madera">
-                Más vendido
-              </span>
-            )}
-            {p.nuevo && (
-              <span className="rounded-full border border-henequen/45 bg-henequen/12 px-2.5 py-1 text-[11px] font-semibold text-[#7d6647]">
-                Nuevo
-              </span>
-            )}
+          <p className="eyebrow mt-8">Los colores</p>
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+            {p.variantes.map((v) => (
+              <Link
+                key={v.slug}
+                href={`/catalogo/${p.id}?color=${v.slug}`}
+                className="flex items-center gap-2 text-[13.5px] text-sombra transition-colors hover:text-madera"
+              >
+                <span
+                  className="h-3.5 w-3.5 rounded-full ring-1 ring-inset ring-black/15"
+                  style={{ backgroundColor: v.hex }}
+                  aria-hidden
+                />
+                {v.nombre}
+              </Link>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <p className="medida mt-6 text-[15px] leading-relaxed text-tinta">{p.descripcion}</p>
+      {/* ══ Video ══
+          La tela se entiende mejor moviéndose que quieta: cómo cae, cuánta
+          luz pasa, cuánto pesa. Por eso el video no es decoración acá. */}
+      {videos.length > 0 && (
+        <section className="mt-16 border-t border-arena pt-12">
+          <p className="eyebrow">En movimiento</p>
+          <h2 className="display-md mt-1.5 text-[24px] text-tinta">Cómo cae la tela</h2>
+          <div className="rail mt-6">
+            {videos.map((v) => (
+              <video
+                key={v.src}
+                src={v.src}
+                poster={v.poster}
+                controls
+                muted
+                loop
+                playsInline
+                preload="none"
+                className="h-[380px] w-[214px] rounded-[3px] object-cover ring-1 ring-inset ring-black/[0.07]"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-          <dl className="mt-8 divide-y divide-arena border-y border-arena text-[14px]">
-            {[
-              ["Tela", p.tela],
-              ["Colores", p.colores.join(" · ")],
-              ["Talles", p.talles.join(" · ")],
-            ].map(([k, v]) => (
-              <div key={k} className="flex gap-6 py-3">
-                <dt className="w-24 shrink-0 text-sombra">{k}</dt>
-                <dd className="text-tinta">{v}</dd>
+      {/* ══ Ambiente ══ */}
+      {p.ambiente.length > 0 && (
+        <section className="mt-16 border-t border-arena pt-12">
+          <p className="eyebrow">De cerca</p>
+          <h2 className="display-md mt-1.5 text-[24px] text-tinta">
+            {p.nombre}, en el taller y en la calle
+          </h2>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {p.ambiente.map((src) => (
+              <div
+                key={src}
+                className="relative aspect-[4/5] overflow-hidden rounded-[3px] ring-1 ring-inset ring-black/[0.07]"
+              >
+                <Image
+                  src={src}
+                  alt={p.nombre}
+                  fill
+                  sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                  className="object-cover"
+                />
               </div>
             ))}
-          </dl>
-
-          <div className="mt-8 rounded-[3px] border border-arena-hondo bg-cal-hondo px-5 py-5">
-            <p className="text-[14px] leading-relaxed text-tinta">
-              Este sitio es un catálogo: no hay compra en línea. Escribinos qué pieza,
-              qué talle y qué color querés, y coordinamos por ahí.
-            </p>
-            <Link
-              href="/contacto"
-              className="mt-4 inline-block rounded-full bg-madera px-6 py-2.5 text-[14px] text-cal transition-colors hover:bg-tinta"
-            >
-              Consultar por esta pieza
-            </Link>
           </div>
-        </div>
-      </div>
+        </section>
+      )}
 
-      {relacionadas.length > 0 && (
-        <section className="mt-20">
-          <p className="eyebrow">De la misma familia</p>
-          <h2 className="display-md mt-1.5 text-[24px] text-tinta">Otras {categoria?.nombre.toLowerCase()}</h2>
-          <div className="mt-6 grid grid-cols-1 gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
-            {relacionadas.map((r) => <ProductoCard key={r.id} p={r} />)}
+      {/* ══ Las otras prendas ══ */}
+      {otras.length > 0 && (
+        <section className="mt-16 border-t border-arena pt-12">
+          <p className="eyebrow">Lo demás que hacemos</p>
+          <h2 className="display-md mt-1.5 text-[24px] text-tinta">Las otras prendas</h2>
+          <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-9 sm:max-w-[36rem]">
+            {otras.map((o) => <PrendaCard key={o.id} p={o} />)}
           </div>
         </section>
       )}

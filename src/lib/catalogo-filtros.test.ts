@@ -1,64 +1,92 @@
 import { describe, expect, it } from "vitest";
-import type { Producto } from "@/data/productos";
-import { filtrarYOrdenar, hayFiltrosActivos, pesoDestacado, type Criterios } from "./catalogo-filtros";
+import type { Producto, Variante } from "@/data/productos";
+import { PRODUCTOS } from "@/data/productos";
+import {
+  contarPorCategoria, fichas, filtrarYOrdenar, hayFiltrosActivos, type Criterios,
+} from "./catalogo-filtros";
 
-function pieza(over: Partial<Producto> & { nombre: string; precio: number }): Producto {
+function color(nombre: string, extra: Partial<Variante> = {}): Variante {
+  return {
+    slug: nombre.toLowerCase().replace(/\s+/g, "-"),
+    nombre,
+    hex: "#cccccc",
+    fotos: [`/media/${nombre}.jpg`],
+    ...extra,
+  };
+}
+
+function prenda(over: Partial<Producto> & { nombre: string }): Producto {
   return {
     id: over.nombre.toLowerCase().replace(/\s+/g, "-"),
+    subtitulo: "Prenda de prueba",
     categoria: "camisas",
     tono: "#eee",
-    colores: ["Crudo"],
-    tela: "Lino belga 100%",
-    descripcion: "Una pieza de prueba.",
+    tela: "Gasa de algodón lavada",
+    descripcion: "Una prenda de prueba.",
+    detalles: [],
+    cuidado: "Lavar en frío.",
     talles: ["S", "M"],
+    variantes: [color("Crudo")],
+    ambiente: [],
     ...over,
   };
 }
 
-const BASE: Criterios = { busqueda: "", categoria: "todas", rango: "todos", orden: "destacados" };
+const BASE: Criterios = { busqueda: "", categoria: "todas", orden: "prenda" };
 
-const CATALOGO = [
-  pieza({ nombre: "Camisa Muyil", precio: 68, masVendido: true }),
-  pieza({ nombre: "Vestido Tulum", precio: 118, categoria: "vestidos", nuevo: true }),
-  pieza({ nombre: "Sombrero Cobá", precio: 58, categoria: "accesorios", tela: "Palma jipijapa tejida a mano" }),
-  pieza({ nombre: "Falda Coba", precio: 90, categoria: "faldas", colores: ["Verde cenote"] }),
+const CATALOGO: Producto[] = [
+  prenda({
+    nombre: "Camisa", categoria: "camisas",
+    variantes: [color("Lila"), color("Crudo"), color("Terracota")],
+  }),
+  prenda({
+    nombre: "Pantalón", categoria: "pantalones", tela: "Algodón lavado, textura de arena",
+    variantes: [color("Arena"), color("Negro")],
+  }),
+  prenda({
+    nombre: "Conjunto", categoria: "conjuntos",
+    variantes: [color("Verde Pistacho")],
+  }),
 ];
 
+describe("fichas", () => {
+  it("expande cada prenda en una ficha por color", () => {
+    expect(fichas(CATALOGO)).toHaveLength(6);
+  });
+
+  it("la clave identifica prenda y color juntos", () => {
+    expect(fichas(CATALOGO).map((f) => f.clave)).toContain("camisa-lila");
+  });
+});
+
 describe("filtrarYOrdenar — filtros", () => {
-  it("sin criterios devuelve todo", () => {
-    expect(filtrarYOrdenar(CATALOGO, BASE)).toHaveLength(4);
+  it("sin criterios devuelve todos los colores de todas las prendas", () => {
+    expect(filtrarYOrdenar(CATALOGO, BASE)).toHaveLength(6);
   });
 
-  it("filtra por categoría", () => {
-    const r = filtrarYOrdenar(CATALOGO, { ...BASE, categoria: "vestidos" });
-    expect(r.map((p) => p.nombre)).toEqual(["Vestido Tulum"]);
+  it("filtra por prenda", () => {
+    const r = filtrarYOrdenar(CATALOGO, { ...BASE, categoria: "pantalones" });
+    expect(r.map((f) => f.variante.nombre)).toEqual(["Arena", "Negro"]);
   });
 
-  it("busca también en la tela y en los colores, no sólo en el nombre", () => {
-    expect(filtrarYOrdenar(CATALOGO, { ...BASE, busqueda: "jipijapa" }).map((p) => p.nombre))
-      .toEqual(["Sombrero Cobá"]);
-    expect(filtrarYOrdenar(CATALOGO, { ...BASE, busqueda: "verde cenote" }).map((p) => p.nombre))
-      .toEqual(["Falda Coba"]);
+  it("busca por color", () => {
+    expect(filtrarYOrdenar(CATALOGO, { ...BASE, busqueda: "lila" }).map((f) => f.clave))
+      .toEqual(["camisa-lila"]);
+  });
+
+  it("busca también en la tela, no sólo en el color", () => {
+    const r = filtrarYOrdenar(CATALOGO, { ...BASE, busqueda: "textura de arena" });
+    expect(r.every((f) => f.producto.categoria === "pantalones")).toBe(true);
+    expect(r).toHaveLength(2);
   });
 
   it("la búsqueda no distingue mayúsculas ni espacios de sobra", () => {
-    expect(filtrarYOrdenar(CATALOGO, { ...BASE, busqueda: "  CAMISA  " })).toHaveLength(1);
+    expect(filtrarYOrdenar(CATALOGO, { ...BASE, busqueda: "  TERRACOTA  " })).toHaveLength(1);
   });
 
-  it("los rangos de precio no se pisan ni dejan huecos", () => {
-    const en = (rango: Criterios["rango"]) =>
-      filtrarYOrdenar(CATALOGO, { ...BASE, rango }).map((p) => p.precio).sort((a, b) => a - b);
-
-    expect(en("hasta-60")).toEqual([58]);
-    expect(en("60-90")).toEqual([68, 90]);
-    expect(en("desde-90")).toEqual([118]);
-    // Cada pieza cae en exactamente un rango.
-    expect([...en("hasta-60"), ...en("60-90"), ...en("desde-90")]).toHaveLength(CATALOGO.length);
-  });
-
-  it("combina categoría, precio y búsqueda", () => {
-    const r = filtrarYOrdenar(CATALOGO, { ...BASE, categoria: "camisas", rango: "60-90", busqueda: "muyil" });
-    expect(r.map((p) => p.nombre)).toEqual(["Camisa Muyil"]);
+  it("combina prenda y búsqueda", () => {
+    const r = filtrarYOrdenar(CATALOGO, { ...BASE, categoria: "camisas", busqueda: "crudo" });
+    expect(r.map((f) => f.clave)).toEqual(["camisa-crudo"]);
   });
 
   it("devuelve vacío cuando nada coincide, sin romper", () => {
@@ -67,66 +95,91 @@ describe("filtrarYOrdenar — filtros", () => {
 });
 
 describe("filtrarYOrdenar — orden", () => {
-  it("ordena por precio en ambos sentidos", () => {
-    expect(filtrarYOrdenar(CATALOGO, { ...BASE, orden: "precio-asc" }).map((p) => p.precio))
-      .toEqual([58, 68, 90, 118]);
-    expect(filtrarYOrdenar(CATALOGO, { ...BASE, orden: "precio-desc" }).map((p) => p.precio))
-      .toEqual([118, 90, 68, 58]);
+  it("por prenda va camisa, pantalón, conjunto — como se viste uno", () => {
+    const cats = filtrarYOrdenar(CATALOGO, BASE).map((f) => f.producto.categoria);
+    expect(cats).toEqual([
+      "camisas", "camisas", "camisas", "pantalones", "pantalones", "conjuntos",
+    ]);
   });
 
-  it("ordena por nombre respetando los acentos del español", () => {
-    // Con localeCompare("es"), "Cobá" va antes que "Coba"… lo importante es que
-    // el acento no lo mande al final del alfabeto como haría un sort crudo.
-    const nombres = filtrarYOrdenar(CATALOGO, { ...BASE, orden: "nombre" }).map((p) => p.nombre);
-    expect(nombres[0]).toBe("Camisa Muyil");
-    expect(nombres[nombres.length - 1]).toBe("Vestido Tulum");
+  it("por prenda respeta el orden de colores del archivo de datos", () => {
+    const r = filtrarYOrdenar(CATALOGO, { ...BASE, categoria: "camisas" });
+    expect(r.map((f) => f.variante.nombre)).toEqual(["Lila", "Crudo", "Terracota"]);
   });
 
-  it("pone las novedades primero", () => {
-    expect(filtrarYOrdenar(CATALOGO, { ...BASE, orden: "nuevos" })[0].nombre).toBe("Vestido Tulum");
+  it("por color ordena alfabéticamente respetando el español", () => {
+    const nombres = filtrarYOrdenar(CATALOGO, { ...BASE, orden: "color" }).map((f) => f.variante.nombre);
+    expect(nombres[0]).toBe("Arena");
+    expect(nombres[nombres.length - 1]).toBe("Verde Pistacho");
   });
 
-  it("en destacados manda el más vendido", () => {
-    expect(filtrarYOrdenar(CATALOGO, BASE)[0].nombre).toBe("Camisa Muyil");
-  });
-
-  it("desempata por nombre cuando el peso es igual", () => {
-    const iguales = [pieza({ nombre: "Zulu", precio: 10 }), pieza({ nombre: "Alfa", precio: 10 })];
-    expect(filtrarYOrdenar(iguales, BASE).map((p) => p.nombre)).toEqual(["Alfa", "Zulu"]);
+  it("por color, el mismo color de dos prendas queda junto y en orden de prenda", () => {
+    const dos: Producto[] = [
+      prenda({ nombre: "Pantalón", categoria: "pantalones", variantes: [color("Crudo")] }),
+      prenda({ nombre: "Camisa", categoria: "camisas", variantes: [color("Crudo")] }),
+    ];
+    expect(filtrarYOrdenar(dos, { ...BASE, orden: "color" }).map((f) => f.clave))
+      .toEqual(["camisa-crudo", "pantalón-crudo"]);
   });
 
   it("no muta el array que recibe", () => {
     const original = [...CATALOGO];
-    filtrarYOrdenar(CATALOGO, { ...BASE, orden: "precio-desc" });
+    filtrarYOrdenar(CATALOGO, { ...BASE, orden: "color" });
     expect(CATALOGO).toEqual(original);
   });
 });
 
-describe("pesoDestacado", () => {
-  it("más vendido pesa más que trending, y trending más que nuevo", () => {
-    expect(pesoDestacado(pieza({ nombre: "a", precio: 1, masVendido: true })))
-      .toBeGreaterThan(pesoDestacado(pieza({ nombre: "b", precio: 1, trending: true })));
-    expect(pesoDestacado(pieza({ nombre: "c", precio: 1, trending: true })))
-      .toBeGreaterThan(pesoDestacado(pieza({ nombre: "d", precio: 1, nuevo: true })));
+describe("hayFiltrosActivos", () => {
+  it("el orden por prenda es el estado limpio", () => {
+    expect(hayFiltrosActivos(BASE)).toBe(false);
   });
 
-  it("una pieza sin distintivos pesa cero", () => {
-    expect(pesoDestacado(pieza({ nombre: "e", precio: 1 }))).toBe(0);
-  });
-
-  it("los distintivos se suman", () => {
-    expect(pesoDestacado(pieza({ nombre: "f", precio: 1, masVendido: true, trending: true, nuevo: true }))).toBe(7);
+  it("detecta búsqueda, prenda y orden cambiado", () => {
+    expect(hayFiltrosActivos({ ...BASE, busqueda: "lino" })).toBe(true);
+    expect(hayFiltrosActivos({ ...BASE, categoria: "conjuntos" })).toBe(true);
+    expect(hayFiltrosActivos({ ...BASE, orden: "color" })).toBe(true);
   });
 });
 
-describe("hayFiltrosActivos", () => {
-  it("el orden no cuenta como filtro: no reduce resultados", () => {
-    expect(hayFiltrosActivos({ ...BASE, orden: "precio-asc" })).toBe(false);
+describe("contarPorCategoria", () => {
+  it("cuenta colores, no prendas", () => {
+    const c = contarPorCategoria(CATALOGO);
+    expect(c.get("camisas")).toBe(3);
+    expect(c.get("pantalones")).toBe(2);
+  });
+});
+
+/* El catálogo real es datos, pero hay invariantes que sí conviene sostener:
+   si una foto se renombra y alguien se olvida de actualizar el archivo, el
+   sitio muestra un cuadro roto. Estos tests miran la forma, no el contenido. */
+describe("el catálogo real", () => {
+  it("son las tres prendas de la casa", () => {
+    expect(PRODUCTOS.map((p) => p.id)).toEqual(["camisa", "pantalon", "conjunto"]);
   });
 
-  it("detecta búsqueda, categoría y rango", () => {
-    expect(hayFiltrosActivos({ ...BASE, busqueda: "lino" })).toBe(true);
-    expect(hayFiltrosActivos({ ...BASE, categoria: "faldas" })).toBe(true);
-    expect(hayFiltrosActivos({ ...BASE, rango: "hasta-60" })).toBe(true);
+  it("cada color tiene al menos una foto y un hex de seis dígitos", () => {
+    for (const p of PRODUCTOS) {
+      for (const v of p.variantes) {
+        expect(v.fotos.length, `${p.id}/${v.slug} sin fotos`).toBeGreaterThan(0);
+        expect(v.hex, `${p.id}/${v.slug}`).toMatch(/^#[0-9a-f]{6}$/);
+      }
+    }
+  });
+
+  it("no hay dos colores con el mismo identificador dentro de una prenda", () => {
+    for (const p of PRODUCTOS) {
+      const slugs = p.variantes.map((v) => v.slug);
+      expect(new Set(slugs).size, `${p.id} repite un color`).toBe(slugs.length);
+    }
+  });
+
+  it("todas las rutas de media apuntan a /media", () => {
+    for (const f of fichas(PRODUCTOS)) {
+      for (const foto of f.variante.fotos) expect(foto).toMatch(/^\/media\/.+\.jpg$/);
+      for (const v of f.variante.videos ?? []) {
+        expect(v.src).toMatch(/^\/media\/.+\.mp4$/);
+        expect(v.poster).toMatch(/^\/media\/.+\.jpg$/);
+      }
+    }
   });
 });

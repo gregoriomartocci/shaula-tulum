@@ -5,24 +5,24 @@ import Image from "next/image";
 export const metadata: Metadata = {
   title: "Quiénes somos · Shaula Tulum",
   description:
-    "Cómo y dónde se hace la ropa de Shaula Tulum: talleres de Yucatán, lino belga, fibra de henequén y tejido a mano.",
+    "Cómo se hace la ropa de Shaula Tulum: gasa de algodón lavada, teñido artesanal en tandas cortas y botones de coco cosidos a mano.",
 };
 
 const HITOS = [
   {
     k: "Dónde",
-    t: "Yucatán y Quintana Roo",
-    d: "Trabajamos con cuatro talleres familiares: dos en Tixkokob, uno en Bécal y uno acá en Tulum. Ninguno tiene más de nueve personas. A todos los conocemos por nombre.",
+    t: "Tulum, Quintana Roo",
+    d: "La marca es de acá y la ropa está pensada para este clima: treinta y cuatro grados, humedad y sol directo. Todo lo que no sobrevive a eso no entra al catálogo.",
   },
   {
     k: "Con qué",
-    t: "Lino, ramio, algodón, henequén",
-    d: "El lino viene de Bélgica porque ahí está el mejor y no vamos a mentir diciendo que es local. Todo lo demás —el algodón crudo, la palma jipijapa, la fibra de henequén— sale de la península.",
+    t: "Gasa de algodón lavada",
+    d: "Algodón, y nada más. La gasa se lava antes de cortar, así la prenda ya llegó a su medida final y no encoge después. Los botones son de coco.",
   },
   {
     k: "Cómo",
-    t: "Tandas cortas, sin temporada",
-    d: "Producimos de a veinte o treinta piezas. No hay colección de invierno ni liquidación de verano: si una prenda funciona, se sigue haciendo; si no, deja de existir sin descuento de por medio.",
+    t: "Teñido a mano, en tandas cortas",
+    d: "Cada color sale de una tanda chica de teñido. Dos tandas del mismo tono nunca dan exactamente igual, y esa diferencia mínima entre una prenda y otra es la firma de que lo hizo alguien.",
   },
 ];
 
@@ -31,8 +31,8 @@ export default function NosotrosPage() {
     <>
       <section className="relative isolate flex min-h-[52vh] items-end overflow-hidden border-b border-arena">
         <Image
-          src="/prendas/nAJEr8KlUnE.jpg"
-          alt="Percha de prendas de lino a contraluz"
+          src="/media/camisas-percha-2.jpg"
+          alt="Percha con camisas Shaula Tulum en sus distintos tonos, al sol"
           fill priority sizes="100vw"
           className="-z-10 object-cover"
         />
@@ -48,21 +48,21 @@ export default function NosotrosPage() {
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <div className="medida space-y-5 text-[16px] leading-relaxed text-tinta">
           <p>
-            Shaula Tulum empezó por una molestia concreta: en el Caribe hace
-            treinta y cuatro grados y casi toda la ropa que se vende está hecha de
-            plástico. Poliéster, elastano, mezclas que no respiran y que a los dos
-            veranos se ponen feas de una manera que no tiene arreglo.
+            Shaula Tulum empezó por una molestia concreta: en el Caribe hace treinta y
+            cuatro grados y casi toda la ropa que se vende está hecha de plástico.
+            Poliéster, elastano, mezclas que no respiran y que a los dos veranos se
+            ponen feas de una manera que no tiene arreglo.
           </p>
           <p>
-            No inventamos nada. El lino se usa hace ocho mil años y no se dejó de usar
-            porque apareciera algo mejor, sino porque apareció algo más barato de
-            fabricar. Nosotros volvimos a la fibra y le sacamos todo lo demás: sin
-            marca estampada, sin temporadas, sin un precio inflado para poder ponerle
-            cuarenta por ciento de descuento en agosto.
+            La respuesta fue quedarse con lo mínimo: una camisa, un pantalón, y el
+            conjunto de los dos. Nada de colecciones nuevas cada tres meses. Todo el
+            trabajo está puesto en la tela y en el color, que es lo que se toca y lo
+            que se ve.
           </p>
           <p>
-            Lo que queda es ropa que alguien cosió, que te vas a poner mucho, y que
-            dentro de cinco veranos va a estar mejor que hoy.
+            La gasa de algodón se arruga, y eso no es un defecto: es la prueba de que
+            no tiene sintético adentro. Se ablanda con cada lavada en vez de gastarse,
+            así que la camisa del tercer verano cae mejor que la del primero.
           </p>
         </div>
       </section>
@@ -81,6 +81,21 @@ export default function NosotrosPage() {
         </div>
       </section>
 
+      {/* Dos fotos de taller: la pila doblada y el detalle del botón, que es
+          donde se ve que hay mano y no máquina. */}
+      <section className="mx-auto max-w-6xl px-5 pt-16 sm:px-8">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          {[
+            { src: "/media/camisas-dobladas-4.jpg", alt: "Camisas dobladas en tonos verde, mostaza y rosa" },
+            { src: "/media/pantalones-grupo-1.jpg", alt: "Pantalones de pinzas doblados, en negro, arena, terracota y olivo" },
+          ].map((f) => (
+            <div key={f.src} className="relative aspect-[5/4] overflow-hidden rounded-[3px] ring-1 ring-inset ring-black/[0.07]">
+              <Image src={f.src} alt={f.alt} fill sizes="(max-width: 639px) 100vw, 50vw" className="object-cover" />
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <p className="eyebrow">Lo que no hacemos</p>
         <h2 className="display-md mt-1.5 max-w-[24ch] text-[27px] leading-tight text-tinta sm:text-[32px]">
@@ -88,8 +103,8 @@ export default function NosotrosPage() {
         </h2>
         <div className="mt-8 grid gap-8 sm:grid-cols-3">
           {[
-            ["Mezclas sintéticas", "Nos piden elastano para que “no se arrugue”. El lino se arruga; esa es la prueba de que es lino. Quien no quiera arrugas no quiere esta ropa, y está bien."],
-            ["Producción grande", "Nos han ofrecido fabricar en volumen fuera de México. A ese precio la prenda deja de ser lo que decimos que es, así que no."],
+            ["Mezclas sintéticas", "Nos piden elastano para que “no se arrugue”. El algodón se arruga; esa es la prueba de que es algodón. Quien no quiera arrugas no quiere esta ropa, y está bien."],
+            ["Producción grande", "Teñir en tandas grandes saldría más barato y todos los colores serían idénticos. Sería otra ropa, así que no."],
             ["Descuentos de temporada", "El precio es el mismo en enero y en julio. Si algo está caro, está caro siempre; si no, no necesita rebaja."],
           ].map(([t, d]) => (
             <div key={t} className="border-t border-arena pt-4">

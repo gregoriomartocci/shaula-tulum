@@ -11,8 +11,8 @@ export default function Footer() {
             <p className="font-display text-[20px] font-medium text-tinta">Shaula Tulum</p>
           </div>
           <p className="medida mt-3 text-[14px] leading-relaxed text-sombra">
-            Lino, algodón crudo y fibras del Caribe mexicano. Piezas hechas a mano
-            en Yucatán y Quintana Roo.
+            Camisas, pantalones y conjuntos de gasa de algodón, teñidos a mano
+            en el Caribe mexicano.
           </p>
         </div>
 
@@ -22,8 +22,8 @@ export default function Footer() {
             {[
               ["/catalogo", "Ver todo"],
               ["/catalogo?categoria=camisas", "Camisas"],
-              ["/catalogo?categoria=vestidos", "Vestidos"],
-              ["/catalogo?categoria=accesorios", "Accesorios"],
+              ["/catalogo?categoria=pantalones", "Pantalones"],
+              ["/catalogo?categoria=conjuntos", "Conjuntos"],
             ].map(([href, txt]) => (
               <li key={href}>
                 <Link href={href} className="text-sombra transition-colors hover:text-madera">
@@ -41,7 +41,7 @@ export default function Footer() {
             <li><Link href="/contacto" className="text-sombra transition-colors hover:text-madera">Contacto</Link></li>
           </ul>
           <p className="mt-5 text-[13px] leading-relaxed text-sombra">
-            Este sitio es un catálogo. No hay venta en línea: las piezas se
+            Este sitio es un catálogo. No hay venta en línea: las prendas se
             encargan por contacto directo.
           </p>
         </div>

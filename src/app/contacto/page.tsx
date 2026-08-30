@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import FormularioContacto from "@/components/FormularioContacto";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 const CANALES = [
   { k: "Correo",    v: "hola@shaula_tulum.mx", href: "mailto:hola@shaula_tulum.mx" },
   { k: "WhatsApp",  v: "+52 984 000 0000",         href: "https://wa.me/529840000000" },
-  { k: "Instagram", v: "@shaula_tulum",        href: "https://instagram.com/shaulatulum" },
+  { k: "Instagram", v: "@shaula_tulum",        href: "https://www.instagram.com/shaula_tulum/" },
 ];
 
 export default function ContactoPage() {
@@ -18,13 +19,14 @@ export default function ContactoPage() {
       <p className="eyebrow">Hablemos</p>
       <h1 className="display-md mt-1.5 text-[32px] text-tinta sm:text-[40px]">Contacto</h1>
       <p className="medida mt-3 text-[15px] leading-relaxed text-sombra">
-        No vendemos por la web. Escribinos qué pieza querés, en qué talle y de qué
-        color, y lo coordinamos por correo o WhatsApp. Contestamos dentro de las
-        veinticuatro horas.
+        No vendemos por la web. Escribinos qué prenda querés, en qué talle y de qué
+        color, y lo coordinamos por correo o WhatsApp.
       </p>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-        <FormularioContacto />
+        <Suspense fallback={<div className="h-[420px] rounded-[3px] border border-dashed border-arena" />}>
+          <FormularioContacto />
+        </Suspense>
 
         <aside className="space-y-8">
           <div>
@@ -52,16 +54,16 @@ export default function ContactoPage() {
             </p>
             <p className="mt-3 text-[13px] leading-relaxed text-sombra">
               Se puede visitar con cita. Avisanos con un día de anticipación y te
-              mostramos las telas en mano, que es la única forma de elegir lino.
+              mostramos los colores en mano, que es la única forma de elegir un teñido.
             </p>
           </div>
 
           <div>
             <p className="eyebrow">Encargos a medida</p>
             <p className="mt-2 text-[14px] leading-relaxed text-sombra">
-              Otro largo, otro talle o un color de la misma tela: entre dos y tres
-              semanas, sin recargo. Un patrón nuevo desde cero lleva más y lo
-              presupuestamos aparte.
+              Otro largo, otro talle, o un color que no está en la carta: el teñido
+              es artesanal y casi cualquier tono se puede hacer. Escribinos y lo
+              vemos.
             </p>
           </div>
         </aside>

@@ -58,7 +58,7 @@ export default async function AdminPage() {
         <div>
           <h1 className="display-md text-[28px] font-medium text-tinta">Catálogo</h1>
           <p className="mt-1 text-[14px] text-sombra">
-            {total} piezas · {publicadas} publicadas
+            {total} prendas · {publicadas} publicadas
             {sinStock.length > 0 && <> · <span className="text-red-700">{sinStock.length} agotadas</span></>}
             {bajas.length > 0 && <> · <span className="text-madera">{bajas.length} con stock bajo</span></>}
           </p>
@@ -67,7 +67,7 @@ export default async function AdminPage() {
           href="/admin/nuevo"
           className="rounded-full bg-madera px-5 py-2.5 text-[14px] font-medium text-cal transition-colors hover:bg-tinta"
         >
-          + Nueva pieza
+          + Nueva prenda
         </Link>
       </div>
 
@@ -79,7 +79,9 @@ export default async function AdminPage() {
           return (
             <div key={f.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 py-3.5">
               <div className="relative h-[58px] w-[46px] shrink-0 overflow-hidden rounded-[2px] bg-arena ring-1 ring-inset ring-black/[0.07]">
-                {f.foto && <Image src={f.foto} alt="" fill sizes="46px" className="object-cover" />}
+                {f.variantes[0]?.fotos[0] && (
+                  <Image src={f.variantes[0].fotos[0]} alt="" fill sizes="46px" className="object-cover" />
+                )}
               </div>
 
               <div className="min-w-[180px] flex-1">
@@ -87,7 +89,8 @@ export default async function AdminPage() {
                   {f.nombre}
                 </Link>
                 <p className="text-[12.5px] text-sombra">
-                  {cat} · ${f.precio}
+                  {cat} · {f.precio != null ? `$${f.precio}` : "a consultar"} ·{" "}
+                  {f.variantes.length} {f.variantes.length === 1 ? "color" : "colores"}
                   {!f.publicado && <span className="ml-2 text-henequen">· oculta</span>}
                 </p>
               </div>

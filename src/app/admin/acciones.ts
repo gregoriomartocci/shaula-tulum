@@ -35,18 +35,23 @@ export async function salir() {
 function leerForm(form: FormData) {
   const lista = (k: string) =>
     String(form.get(k) ?? "").split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
+  const renglones = (k: string) =>
+    String(form.get(k) ?? "").split("\n").map((s) => s.trim()).filter(Boolean);
   const num = (k: string) => {
     const v = String(form.get(k) ?? "").trim();
     return v === "" ? null : Number(v);
   };
   return {
     nombre: String(form.get("nombre") ?? "").trim(),
+    subtitulo: String(form.get("subtitulo") ?? "").trim(),
     categoria: String(form.get("categoria") ?? "camisas"),
-    precio: Number(form.get("precio") ?? 0),
+    /* El precio es opcional: vacío quiere decir "a consultar", que es lo
+       que muestra la ficha mientras no haya lista de precios. */
+    precio: num("precio"),
     tono: String(form.get("tono") ?? "#e8dcc8"),
-    foto: String(form.get("foto") ?? "").trim() || null,
-    colores: lista("colores"),
     talles: lista("talles"),
+    detalles: renglones("detalles"),
+    cuidado: String(form.get("cuidado") ?? "").trim(),
     tela: String(form.get("tela") ?? "").trim(),
     descripcion: String(form.get("descripcion") ?? "").trim(),
     stock: num("stock"),
@@ -62,7 +67,9 @@ export async function crearProducto(_prev: unknown, form: FormData) {
   const base = await exigirSesion();
   const datos = leerForm(form);
   if (!datos.nombre) return { error: "El nombre es obligatorio." };
-  if (!Number.isFinite(datos.precio) || datos.precio < 0) return { error: "El precio no es válido." };
+  if (datos.precio != null && (!Number.isFinite(datos.precio) || datos.precio < 0)) {
+    return { error: "El precio no es válido." };
+  }
 
   const id = String(form.get("id") ?? "").trim() || aSlug(datos.nombre);
   const [existe] = await base.select({ id: tabla.id }).from(tabla).where(eq(tabla.id, id)).limit(1);

@@ -13,24 +13,31 @@ import { PRODUCTOS as SEMILLA, type Producto } from "@/data/productos";
 
 /** Fila de la base → la forma que ya consumen las páginas. */
 function aProducto(f: typeof tabla.$inferSelect): Producto {
+  /* Las fotos y los colores viven con el código. Si la fila todavía no los
+     tiene (base sembrada con una versión vieja, o prenda creada desde el
+     panel), se toman de la semilla en vez de dejar la ficha sin imágenes. */
+  const semilla = SEMILLA.find((p) => p.id === f.id);
   return {
     id: f.id,
     nombre: f.nombre,
+    subtitulo: f.subtitulo || semilla?.subtitulo || "",
     categoria: f.categoria as Producto["categoria"],
-    precio: f.precio,
+    precio: f.precio ?? undefined,
     tono: f.tono,
-    foto: f.foto ?? undefined,
-    colores: f.colores ?? [],
-    talles: f.talles ?? [],
     tela: f.tela,
     descripcion: f.descripcion,
+    detalles: f.detalles ?? [],
+    cuidado: f.cuidado,
+    talles: f.talles ?? [],
+    variantes: f.variantes?.length ? f.variantes : (semilla?.variantes ?? []),
+    ambiente: f.ambiente?.length ? f.ambiente : (semilla?.ambiente ?? []),
     masVendido: f.masVendido,
     trending: f.trending,
     nuevo: f.nuevo,
   };
 }
 
-/** El catálogo público: sólo lo publicado. */
+/** El catálogo público: sólo lo publicado, y sólo lo que tiene colores. */
 export async function getProductos(): Promise<Producto[]> {
   if (!db) return SEMILLA;
   const filas = await db.select().from(tabla)
@@ -38,7 +45,8 @@ export async function getProductos(): Promise<Producto[]> {
     .orderBy(asc(tabla.orden), asc(tabla.nombre));
   // Base vacía (recién creada, sin sembrar): mejor mostrar la semilla que
   // un catálogo en blanco.
-  return filas.length ? filas.map(aProducto) : SEMILLA;
+  if (!filas.length) return SEMILLA;
+  return filas.map(aProducto).filter((p) => p.variantes.length > 0);
 }
 
 export async function getProducto(id: string): Promise<Producto | null> {

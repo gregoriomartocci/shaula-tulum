@@ -1,280 +1,267 @@
 /* Catálogo de Shaula Tulum.
-   No hay ventas online: esto es un catálogo. El precio se muestra como
-   referencia y la compra se coordina por contacto. */
 
-export type Categoria =
-  | "camisas" | "pantalones" | "vestidos" | "tunicas" | "faldas" | "accesorios";
+   La casa hace TRES prendas: la camisa, el pantalón y el conjunto de las
+   dos. Lo que cambia entre una pieza y otra no es el molde — es el color.
+   Por eso el catálogo no es una lista de productos distintos: son tres
+   productos con sus variantes de color, y cada variante trae su propia
+   fotografía y su propio video.
+
+   No hay ventas online: esto es un catálogo. La compra se coordina por
+   contacto directo. */
+
+export type Categoria = "camisas" | "pantalones" | "conjuntos";
+
+export type Video = {
+  src: string;
+  /** Primer cuadro del video: se muestra hasta que el visitante lo pide. */
+  poster: string;
+};
+
+/** Un color de una prenda, con sus propias fotos y videos. */
+export type Variante = {
+  slug: string;
+  nombre: string;
+  /** Muestra del color, tomada de la foto. Se usa en el selector. */
+  hex: string;
+  fotos: string[];
+  videos?: Video[];
+};
 
 export type Producto = {
   id: string;
   nombre: string;
+  /** Cómo se llama la prenda en una línea, para tarjetas y buscadores. */
+  subtitulo: string;
   categoria: Categoria;
-  precio: number;
-  /** Color dominante de la prenda — respaldo cuando no hay foto. */
+  /** Color dominante — respaldo cuando falta una foto. */
   tono: string;
-  /** Foto de la prenda en /public/prendas. Datos de prueba. */
-  foto?: string;
-  colores: string[];
+  /** Sin precio publicado se muestra "a consultar". Se carga desde el panel. */
+  precio?: number;
   tela: string;
   descripcion: string;
+  /** Los detalles de confección que se ven en las fotos. */
+  detalles: string[];
+  cuidado: string;
   talles: string[];
+  variantes: Variante[];
+  /** Fotos de contexto: looks, percheros, la pila de prendas dobladas. */
+  ambiente: string[];
   masVendido?: boolean;
   trending?: boolean;
   nuevo?: boolean;
 };
 
 export const CATEGORIAS: { slug: Categoria; nombre: string; descripcion: string }[] = [
-  { slug: "camisas",     nombre: "Camisas",     descripcion: "Lino lavado, cuello suelto, para el calor de verdad." },
-  { slug: "pantalones",  nombre: "Pantalones",  descripcion: "Caída amplia, cintura con cordón, cero rigidez." },
-  { slug: "vestidos",    nombre: "Vestidos",    descripcion: "Una sola pieza, del mar a la mesa sin cambiarse." },
-  { slug: "tunicas",     nombre: "Túnicas",     descripcion: "La prenda más vieja del mundo, y todavía la mejor." },
-  { slug: "faldas",      nombre: "Faldas",      descripcion: "Movimiento, largo generoso, nada que apriete." },
-  { slug: "accesorios",  nombre: "Accesorios",  descripcion: "Palma tejida, algodón crudo, latón sin pulir." },
+  { slug: "camisas",    nombre: "Camisas",    descripcion: "Gasa de algodón, cuello mao o escote cruzado, botón de coco." },
+  { slug: "pantalones", nombre: "Pantalones", descripcion: "Pinzas al frente, caída amplia, cintura que no aprieta." },
+  { slug: "conjuntos",  nombre: "Conjuntos",  descripcion: "Camisa y pantalón del mismo tono, teñidos en la misma tanda." },
+];
+
+/* El catálogo no se ordena por precio — no hay precios publicados — sino
+   por prenda (camisa, pantalón, conjunto) o por color. */
+export type OrdenSlug = "prenda" | "color";
+
+export const ORDENES: { slug: OrdenSlug; nombre: string }[] = [
+  { slug: "prenda", nombre: "Por prenda" },
+  { slug: "color",  nombre: "Por color" },
+];
+
+/* ══════════════════════════════════════════════════════════════
+   Los colores
+
+   Cada `hex` está sacado de la foto de esa prenda, no inventado: es el
+   color con el que se pinta la muestra del selector, así el punto que se
+   toca y la tela que se ve son el mismo color.
+   ══════════════════════════════════════════════════════════════ */
+
+const CAMISA_VARIANTES: Variante[] = [
+  {
+    slug: "crudo", nombre: "Crudo", hex: "#e7dcc2",
+    fotos: ["/media/camisa-crudo-1.jpg", "/media/camisa-crudo-2.jpg"],
+    videos: [
+      { src: "/media/video-camisa-crudo.mp4", poster: "/media/video-camisa-crudo-poster.jpg" },
+      { src: "/media/video-camisa-crudo-2.mp4", poster: "/media/video-camisa-crudo-2-poster.jpg" },
+    ],
+  },
+  {
+    slug: "arena", nombre: "Arena", hex: "#a99b87",
+    fotos: ["/media/camisa-arena-1.jpg", "/media/camisa-arena-3.jpg", "/media/camisa-arena-2.jpg"],
+    videos: [{ src: "/media/video-camisa-arena.mp4", poster: "/media/video-camisa-arena-poster.jpg" }],
+  },
+  {
+    slug: "rosa-tulum", nombre: "Rosa Tulum", hex: "#c3a08e",
+    fotos: ["/media/camisa-rosa-1.jpg"],
+    videos: [{ src: "/media/video-camisa-rosa.mp4", poster: "/media/video-camisa-rosa-poster.jpg" }],
+  },
+  {
+    slug: "terracota", nombre: "Terracota", hex: "#96493a",
+    fotos: ["/media/camisa-terracota-1.jpg", "/media/camisa-terracota-2.jpg"],
+    videos: [{ src: "/media/video-camisa-terracota.mp4", poster: "/media/video-camisa-terracota-poster.jpg" }],
+  },
+  { slug: "mostaza",  nombre: "Mostaza",       hex: "#c69210", fotos: ["/media/camisa-mostaza-1.jpg", "/media/look-atardecer-1.jpg"] },
+  { slug: "pistacho", nombre: "Verde Pistacho", hex: "#adae70", fotos: ["/media/camisa-pistacho-1.jpg", "/media/camisa-pistacho-2.jpg", "/media/look-pistacho-5.jpg"] },
+  { slug: "salvia",   nombre: "Verde Salvia",   hex: "#7f9188", fotos: ["/media/camisa-salvia-1.jpg", "/media/camisa-salvia-2.jpg"] },
+  { slug: "azul",     nombre: "Azul Índigo",    hex: "#5c6e8c", fotos: ["/media/camisa-azul-1.jpg"] },
+  {
+    slug: "lila", nombre: "Lila", hex: "#a493b4",
+    fotos: ["/media/camisa-lila-1.jpg", "/media/camisa-lila-2.jpg"],
+    videos: [{ src: "/media/video-camisa-lila.mp4", poster: "/media/video-camisa-lila-poster.jpg" }],
+  },
+  { slug: "grafito", nombre: "Gris Grafito", hex: "#4e5761", fotos: ["/media/camisa-grafito-1.jpg", "/media/camisa-grafito-2.jpg"] },
+  { slug: "negro",   nombre: "Negro",        hex: "#22201e", fotos: ["/media/camisa-negro-1.jpg"] },
+];
+
+/* El pantalón tiene cinco tonos, no seis: las tres fotos de arena clara
+   (frente, cintura y bolsillo trasero) son de la MISMA prenda, así que van
+   juntas en Crudo en vez de inventar un color más. */
+const PANTALON_VARIANTES: Variante[] = [
+  {
+    slug: "crudo", nombre: "Crudo", hex: "#ded0b0",
+    fotos: ["/media/pantalon-crudo-1.jpg", "/media/pantalon-arena-1.jpg", "/media/pantalon-crudo-2.jpg"],
+  },
+  { slug: "camel",     nombre: "Camel",       hex: "#b49873", fotos: ["/media/pantalon-camel-1.jpg", "/media/pantalones-grupo-2.jpg"] },
+  { slug: "terracota", nombre: "Terracota",   hex: "#9a4b3e", fotos: ["/media/pantalon-terracota-1.jpg", "/media/pantalones-grupo-1.jpg"] },
+  { slug: "olivo",     nombre: "Verde Olivo", hex: "#5f6b4e", fotos: ["/media/pantalon-olivo-1.jpg", "/media/pantalones-grupo-1.jpg"] },
+  { slug: "negro",     nombre: "Negro",       hex: "#1e1d1c", fotos: ["/media/pantalon-negro-1.jpg", "/media/pantalones-grupo-1.jpg", "/media/pantalones-grupo-2.jpg"] },
+];
+
+/* El conjunto no es una prenda nueva: es la camisa y el pantalón del mismo
+   tono, teñidos juntos. Por eso sus fotos son las de las dos piezas. */
+const CONJUNTO_VARIANTES: Variante[] = [
+  {
+    slug: "pistacho", nombre: "Verde Pistacho", hex: "#adae70",
+    fotos: [
+      "/media/look-pistacho-5.jpg", "/media/look-pistacho-2.jpg", "/media/look-pistacho-3.jpg",
+      "/media/look-pistacho-4.jpg", "/media/look-pistacho-1.jpg", "/media/camisa-pistacho-1.jpg",
+    ],
+  },
+  {
+    slug: "crudo", nombre: "Crudo", hex: "#e7dcc2",
+    fotos: [
+      "/media/camisa-crudo-1.jpg", "/media/pantalon-crudo-1.jpg",
+      "/media/pantalon-crudo-2.jpg", "/media/look-atardecer-1.jpg",
+    ],
+    videos: [{ src: "/media/video-camisa-crudo.mp4", poster: "/media/video-camisa-crudo-poster.jpg" }],
+  },
+  {
+    slug: "arena", nombre: "Arena", hex: "#c0b096",
+    fotos: [
+      "/media/look-arena-1.jpg", "/media/camisa-arena-3.jpg",
+      "/media/pantalon-camel-1.jpg", "/media/camisa-arena-1.jpg",
+    ],
+    videos: [{ src: "/media/video-camisa-arena.mp4", poster: "/media/video-camisa-arena-poster.jpg" }],
+  },
+  {
+    slug: "terracota", nombre: "Terracota", hex: "#96493a",
+    fotos: [
+      "/media/camisa-terracota-1.jpg", "/media/pantalon-terracota-1.jpg", "/media/camisa-terracota-2.jpg",
+    ],
+    videos: [{ src: "/media/video-camisa-terracota.mp4", poster: "/media/video-camisa-terracota-poster.jpg" }],
+  },
+  {
+    slug: "olivo", nombre: "Verde Olivo", hex: "#5f6b4e",
+    fotos: ["/media/camisa-salvia-2.jpg", "/media/pantalon-olivo-1.jpg", "/media/camisas-dobladas-2.jpg"],
+  },
+  {
+    slug: "negro", nombre: "Negro", hex: "#22201e",
+    fotos: ["/media/camisa-negro-1.jpg", "/media/pantalon-negro-1.jpg", "/media/camisas-dobladas-2.jpg"],
+  },
 ];
 
 export const PRODUCTOS: Producto[] = [
   {
-    id: "camisa-sian-kaan",
-    nombre: "Camisa Sian Ka'an",
-    categoria: "camisas", precio: 74, tono: "#EFE7D8", foto: "/prendas/S4f4apZd-hA.jpg",
-    colores: ["Crudo", "Arena", "Verde cenote"],
-    tela: "Lino belga 100%, lavado en piedra",
-    descripcion: "El lino se ablanda con cada lavada en vez de gastarse. Esta camisa se compra una vez y se usa diez veranos: cuello sin entretela, botones de coco, y un corte que deja pasar el aire por donde tiene que pasar.",
-    talles: ["XS", "S", "M", "L", "XL"],
-    masVendido: true, trending: true,
-  },
-  {
-    id: "camisa-muyil",
-    nombre: "Camisa Muyil",
-    categoria: "camisas", precio: 68, tono: "#DCD3C0", foto: "/prendas/lziP7ZPtghg.jpg",
-    colores: ["Arena", "Blanco cal"],
-    tela: "Lino y algodón orgánico",
-    descripcion: "Manga corta, hombro caído, un bolsillo al pecho. La camisa que te ponés arriba del traje de baño y seguís vestido para cenar.",
+    id: "camisa",
+    nombre: "Camisa Shaula",
+    subtitulo: "Gasa de algodón, cuello mao",
+    categoria: "camisas",
+    tono: "#e7dcc2",
+    tela: "Gasa de algodón lavada",
+    descripcion:
+      "La camisa de la casa, en once colores. Gasa de algodón lavada: liviana, con esa arruga suave que no se plancha porque es la tela, no un descuido. Cuello mao sin entretela — se para solo lo justo — y botones de coco cosidos uno por uno. El corte es holgado en el cuerpo y la manga se arremanga sola.",
+    detalles: [
+      "Cuello mao, sin entretela",
+      "Botones de coco, cosidos a mano",
+      "Manga larga con puño abotonado",
+      "Corte holgado, hombro caído",
+      "Etiqueta tejida en el cuello",
+    ],
+    cuidado: "Lavado a mano o a máquina en frío, con jabón neutro. Secar a la sombra. No necesita plancha: la arruga es de la tela.",
     talles: ["S", "M", "L", "XL"],
+    variantes: CAMISA_VARIANTES,
+    ambiente: [
+      "/media/camisas-percha-1.jpg", "/media/camisas-percha-2.jpg",
+      "/media/camisas-dobladas-1.jpg", "/media/camisas-dobladas-4.jpg",
+      "/media/camisas-dobladas-3.jpg", "/media/camisas-dobladas-5.jpg",
+      "/media/camisas-dobladas-2.jpg",
+    ],
     masVendido: true,
+    trending: true,
   },
   {
-    id: "camisa-holbox",
-    nombre: "Camisa Holbox",
-    categoria: "camisas", precio: 82, tono: "#C9D6D2", foto: "/prendas/maHb1ki_X3o.jpg",
-    colores: ["Verde agua", "Crudo"],
-    tela: "Ramio y lino",
-    descripcion: "Cuello mao, sin botones hasta abajo — se pasa por la cabeza. El ramio le da una caída más seca que el lino solo, así no se pega al cuerpo con humedad.",
-    talles: ["S", "M", "L"],
-    nuevo: true, trending: true,
-  },
-  {
-    id: "camisa-coba",
-    nombre: "Camisa Cobá",
-    categoria: "camisas", precio: 79, tono: "#B9A88C", foto: "/prendas/SVMaSpddK7o.jpg",
-    colores: ["Henequén", "Tabaco"],
-    tela: "Lino grueso tejido a mano",
-    descripcion: "Tejida en telar de pedal en Yucatán. Cada pieza tiene la trama levemente distinta — no es un defecto, es la única prueba de que no salió de una máquina.",
-    talles: ["M", "L", "XL"],
-  },
-  {
-    id: "pantalon-cenote",
-    nombre: "Pantalón Cenote",
-    categoria: "pantalones", precio: 88, tono: "#E3D9C6", foto: "/prendas/JyGAXGfv3eo.jpg",
-    colores: ["Arena", "Negro humo", "Crudo"],
-    tela: "Lino lavado 100%",
-    descripcion: "Cintura con cordón de algodón, pierna ancha, tobillo al aire. Se dobla en cuatro y entra en cualquier bolso sin quedar arrugado de forma fea — el lino se arruga lindo, esa es la gracia.",
-    talles: ["XS", "S", "M", "L", "XL"],
-    masVendido: true,
-  },
-  {
-    id: "pantalon-akumal",
-    nombre: "Pantalón Akumal",
-    categoria: "pantalones", precio: 96, tono: "#CFC4AE", foto: "/prendas/JODDyeaBU6s.jpg",
-    colores: ["Arena tostada", "Blanco cal"],
-    tela: "Lino irlandés",
-    descripcion: "Corte más recto, pinzas al frente, bolsillo italiano. El único pantalón de la casa que aguanta una reunión y una playa el mismo día.",
+    id: "pantalon",
+    nombre: "Pantalón Shaula",
+    subtitulo: "Pinzas al frente, caída amplia",
+    categoria: "pantalones",
+    tono: "#cdbe9d",
+    tela: "Algodón lavado, textura de arena",
+    descripcion:
+      "Pantalón de pinzas, ancho de pierna y liviano. La pinza le da caída sin volumen: cae recto desde la cadera en vez de pegarse. Pretina con botón de coco, presillas y bolsillos a los costados. Es el pantalón para el calor que igual se puede usar a la noche.",
+    detalles: [
+      "Pinzas al frente, caída recta",
+      "Pretina con botón de coco y presillas",
+      "Bolsillos laterales y bolsillo trasero ribeteado",
+      "Tiro medio, pierna amplia",
+      "Algodón lavado, sin rigidez",
+    ],
+    cuidado: "Lavado en frío, secado a la sombra. Se ablanda con cada lavada.",
     talles: ["S", "M", "L", "XL"],
-    trending: true,
-  },
-  {
-    id: "pantalon-bacalar",
-    nombre: "Pantalón Bacalar",
-    categoria: "pantalones", precio: 72, tono: "#A8B5AE", foto: "/prendas/VXVliw58qNg.jpg",
-    colores: ["Verde laguna", "Arena"],
-    tela: "Algodón crudo lavado",
-    descripcion: "El más liviano del catálogo. Pensado para el mediodía, cuando cualquier cosa que no respire deja de ser ropa y pasa a ser un problema.",
-    talles: ["S", "M", "L"],
-    nuevo: true,
-  },
-  {
-    id: "vestido-tulum",
-    nombre: "Vestido Tulum",
-    categoria: "vestidos", precio: 118, tono: "#F2EADC", foto: "/prendas/dziVRZYOFpI.jpg",
-    colores: ["Blanco cal", "Arena"],
-    tela: "Lino belga 100%",
-    descripcion: "Largo hasta el tobillo, tirante ancho, espalda descubierta. La prenda que da nombre a la casa: una sola pieza, cero decisiones, andá.",
-    talles: ["XS", "S", "M", "L"],
-    masVendido: true, trending: true,
-  },
-  {
-    id: "vestido-xcacel",
-    nombre: "Vestido Xcacel",
-    categoria: "vestidos", precio: 104, tono: "#DDD0BA", foto: "/prendas/ejqLADn6aOI.jpg",
-    colores: ["Arena", "Terracota suave"],
-    tela: "Lino y viscosa de bambú",
-    descripcion: "Corte camisero, cinto del mismo género, botones hasta la mitad. El bambú le suma caída sin quitarle la textura del lino.",
-    talles: ["XS", "S", "M", "L", "XL"],
-  },
-  {
-    id: "vestido-yalku",
-    nombre: "Vestido Yal-kú",
-    categoria: "vestidos", precio: 132, tono: "#9FB5B0", foto: "/prendas/hElEUd24xQo.jpg",
-    colores: ["Verde cenote", "Crudo"],
-    tela: "Lino tejido a mano",
-    descripcion: "Manga japonesa, largo midi, un solo bolsillo escondido en la costura. Teñido con añil natural en tandas de veinte piezas, así que ningún verde es idéntico a otro.",
-    talles: ["S", "M", "L"],
-    nuevo: true,
-  },
-  {
-    id: "tunica-chichen",
-    nombre: "Túnica Chichén",
-    categoria: "tunicas", precio: 92, tono: "#EDE4D2", foto: "/prendas/CXeCybhbBvY.jpg",
-    colores: ["Crudo", "Arena"],
-    tela: "Lino grueso 100%",
-    descripcion: "Cuello en V abierto, largo hasta la rodilla, aberturas laterales altas. La forma más antigua de vestirse que sigue funcionando: un rectángulo de tela que sabe dónde caer.",
-    talles: ["Único"],
+    variantes: PANTALON_VARIANTES,
+    ambiente: ["/media/pantalones-grupo-1.jpg", "/media/pantalones-grupo-2.jpg", "/media/look-arena-1.jpg", "/media/pantalon-crudo-2.jpg"],
     masVendido: true,
   },
   {
-    id: "tunica-uxmal",
-    nombre: "Túnica Uxmal",
-    categoria: "tunicas", precio: 86, tono: "#C4B69C", foto: "/prendas/lqgOR1i-C3w.jpg",
-    colores: ["Henequén", "Blanco cal"],
-    tela: "Algodón de telar yucateco",
-    descripcion: "Bordado a mano en el escote, hecho por artesanas de Tixkokob. Cada bordado lleva entre cuatro y seis horas — es lo que separa esto de una prenda de vitrina.",
-    talles: ["S/M", "L/XL"],
-    trending: true,
-  },
-  {
-    id: "tunica-ekbalam",
-    nombre: "Túnica Ek Balam",
-    categoria: "tunicas", precio: 78, tono: "#D6CCBC", foto: "/prendas/cYRsB4liZPs.jpg",
-    colores: ["Arena", "Negro humo"],
-    tela: "Lino liviano",
-    descripcion: "La versión corta, para arriba de un pantalón o de un traje de baño. Sin botones, sin cierre, sin nada que se pueda romper.",
-    talles: ["XS", "S", "M", "L"],
-  },
-  {
-    id: "falda-punta-allen",
-    nombre: "Falda Punta Allen",
-    categoria: "faldas", precio: 84, tono: "#E7DECB", foto: "/prendas/9-xnHXRylvQ.jpg",
-    colores: ["Arena", "Crudo"],
-    tela: "Lino lavado 100%",
-    descripcion: "Largo hasta el tobillo, cintura elástica cubierta, dos bolsillos profundos de verdad. Se camina, se sienta en la arena y se sacude.",
-    talles: ["XS", "S", "M", "L"],
-    masVendido: true,
-  },
-  {
-    id: "falda-zamas",
-    nombre: "Falda Zamás",
-    categoria: "faldas", precio: 76, tono: "#BFC9C0", foto: "/prendas/I12enD_yuEs.jpg",
-    colores: ["Verde laguna", "Blanco cal"],
-    tela: "Ramio y algodón",
-    descripcion: "Cruzada, se ata al costado. Un solo talle que se ajusta al cuerpo en vez de al revés.",
-    talles: ["Único"],
-    nuevo: true, trending: true,
-  },
-  {
-    id: "sombrero-coba",
-    nombre: "Sombrero Cobá",
-    categoria: "accesorios", precio: 58, tono: "#D8C9A6", foto: "/prendas/j2xVSId3nWI.jpg",
-    colores: ["Palma natural"],
-    tela: "Palma jipijapa tejida a mano",
-    descripcion: "Tejido en Bécal, donde lo hacen dentro de cuevas para que la humedad mantenga la fibra flexible. Se enrolla, viaja en el bolso y vuelve a su forma.",
-    talles: ["55", "57", "59", "61"],
-    masVendido: true, trending: true,
-  },
-  {
-    id: "bolso-sisal",
-    nombre: "Bolso Sisal",
-    categoria: "accesorios", precio: 64, tono: "#C7B896", foto: "/prendas/HbiRi1Owk9k.jpg",
-    colores: ["Henequén natural"],
-    tela: "Fibra de henequén y cuero vegetal",
-    descripcion: "El henequén fue la fibra que hizo rica a Yucatán durante un siglo. Este bolso está hecho con la misma planta, por la misma gente, en el mismo lugar.",
-    talles: ["Único"],
-  },
-  {
-    id: "panuelo-akbal",
-    nombre: "Pañuelo Akbal",
-    categoria: "accesorios", precio: 38, tono: "#A9BDB7", foto: "/prendas/N_wGDmRL4hQ.jpg",
-    colores: ["Verde cenote", "Arena", "Crudo"],
-    tela: "Lino liviano teñido a mano",
-    descripcion: "Noventa por noventa. Al cuello, en la cabeza, atado al bolso o como mantel de picnic. El accesorio más barato y el que más se usa.",
-    talles: ["Único"],
-    nuevo: true,
-  },
-  {
-    id: "cinto-henequen",
-    nombre: "Cinto Henequén",
-    categoria: "accesorios", precio: 46, tono: "#B5A182", foto: "/prendas/HbiRi1Owk9k.jpg",
-    colores: ["Natural", "Tabaco"],
-    tela: "Trenzado de henequén con hebilla de latón",
-    descripcion: "Latón sin lacar: se va oxidando y se pone más lindo. Si lo querés brillante otra vez, se limpia con limón.",
-    talles: ["S", "M", "L"],
-  },
-  {
-    id: "camisa-tulum-noche",
-    nombre: "Camisa Tulum Noche",
-    categoria: "camisas", precio: 89, tono: "#3E4340", foto: "/prendas/kXsBsAp5Q0Y.jpg",
-    colores: ["Negro humo", "Verde cenote"],
-    tela: "Lino belga teñido en prenda",
-    descripcion: "La única pieza oscura de la casa. Mismo corte que la Sian Ka'an, teñida después de confeccionada para que el color quede parejo hasta en las costuras.",
+    id: "conjunto",
+    nombre: "Conjunto Shaula",
+    subtitulo: "Camisa y pantalón, mismo tono",
+    categoria: "conjuntos",
+    tono: "#adae70",
+    tela: "Gasa y algodón lavado, teñidos en la misma tanda",
+    descripcion:
+      "La camisa y el pantalón del mismo color, teñidos en la misma tanda. Eso último importa: el teñido es artesanal y dos tandas distintas del mismo tono nunca dan exactamente igual. Comprados juntos, coinciden. Se usa como un traje liviano, o cada pieza por su lado.",
+    detalles: [
+      "Camisa y pantalón teñidos juntos: el tono coincide",
+      "Se puede pedir cada pieza en talle distinto",
+      "Los mismos botones de coco en las dos prendas",
+      "Seis tonos disponibles como conjunto",
+    ],
+    cuidado: "Lavar las dos piezas juntas y en frío, para que envejezcan parejo.",
     talles: ["S", "M", "L", "XL"],
-    trending: true,
-  },
-  {
-    id: "pantalon-corto-sac",
-    nombre: "Pantalón Corto Sac",
-    categoria: "pantalones", precio: 58, tono: "#EAE0CC", foto: "/prendas/CIPgEBCE1oI.jpg",
-    colores: ["Crudo", "Arena", "Verde laguna"],
-    tela: "Lino lavado 100%",
-    descripcion: "Largo arriba de la rodilla, cordón de algodón, dos bolsillos. Lo más simple del catálogo y probablemente lo que más te vas a poner.",
-    talles: ["XS", "S", "M", "L", "XL"],
-    masVendido: true,
-  },
-  {
-    id: "vestido-corto-nohoch",
-    nombre: "Vestido Corto Nohoch",
-    categoria: "vestidos", precio: 88, tono: "#E0D4BE", foto: "/prendas/PJ6AlcNyscg.jpg",
-    colores: ["Arena", "Blanco cal"],
-    tela: "Lino y algodón orgánico",
-    descripcion: "Corte recto, sin cintura marcada, largo arriba de la rodilla. Diseñado para que no haya que pensarlo: se pone y se sale.",
-    talles: ["XS", "S", "M", "L"],
+    variantes: CONJUNTO_VARIANTES,
+    ambiente: [
+      "/media/look-pistacho-2.jpg", "/media/look-pistacho-3.jpg",
+      "/media/look-atardecer-1.jpg", "/media/look-arena-1.jpg",
+    ],
     nuevo: true,
-  },
-  {
-    id: "tunica-larga-kaan",
-    nombre: "Túnica Larga Ka'an",
-    categoria: "tunicas", precio: 108, tono: "#F0E8D9", foto: "/prendas/nAJEr8KlUnE.jpg",
-    colores: ["Blanco cal", "Crudo"],
-    tela: "Lino belga liviano",
-    descripcion: "Hasta el tobillo, translúcida al sol. Pensada como salida de baño pero termina usándose todo el día, que es el mejor destino que puede tener una prenda.",
-    talles: ["S/M", "L/XL"],
     trending: true,
-  },
-  {
-    id: "falda-corta-tankah",
-    nombre: "Falda Corta Tankah",
-    categoria: "faldas", precio: 62, tono: "#D3C6AF", foto: "/prendas/8p6s8h6BNjg.jpg",
-    colores: ["Arena", "Henequén"],
-    tela: "Lino lavado",
-    descripcion: "Cintura alta, largo midi corto, un tajo lateral discreto. La que entra en el bolso sin ocupar nada.",
-    talles: ["XS", "S", "M", "L"],
   },
 ];
 
-export const ORDENES = [
-  { slug: "destacados",   nombre: "Destacados" },
-  { slug: "precio-asc",   nombre: "Precio: menor a mayor" },
-  { slug: "precio-desc",  nombre: "Precio: mayor a menor" },
-  { slug: "nombre",       nombre: "Nombre A–Z" },
-  { slug: "nuevos",       nombre: "Novedades primero" },
-] as const;
+/** Los nombres de color de una prenda — para búsquedas y tarjetas. */
+export function coloresDe(p: Producto): string[] {
+  return p.variantes.map((v) => v.nombre);
+}
 
-export type OrdenSlug = (typeof ORDENES)[number]["slug"];
+/** La primera foto de la prenda: la que representa al producto. */
+export function fotoPrincipal(p: Producto): string | undefined {
+  return p.variantes[0]?.fotos[0];
+}
+
+/** Todos los videos de una prenda, sin repetir. */
+export function videosDe(p: Producto): Video[] {
+  const vistos = new Set<string>();
+  return p.variantes.flatMap((v) => v.videos ?? []).filter((v) => {
+    if (vistos.has(v.src)) return false;
+    vistos.add(v.src);
+    return true;
+  });
+}
