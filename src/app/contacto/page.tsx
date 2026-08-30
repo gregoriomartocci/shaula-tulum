@@ -3,8 +3,12 @@ import { Suspense } from "react";
 import FormularioContacto from "@/components/FormularioContacto";
 
 export const metadata: Metadata = {
-  title: "Contacto · Shaula Tulum",
-  description: "Encargos, talles, colores a pedido y visitas al taller de Tulum.",
+  title: "Contacto — encargos y envíos a todo México",
+  description:
+    "Escribinos qué prenda, qué talle y qué color. Encargos a medida, colores a pedido, " +
+    "visitas al taller de Tulum y envíos a todo México.",
+  alternates: { canonical: "/contacto" },
+  openGraph: { type: "website", url: "/contacto", title: "Contacto · Shaula Tulum" },
 };
 
 const CANALES = [

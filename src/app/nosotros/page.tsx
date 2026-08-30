@@ -3,9 +3,11 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Quiénes somos · Shaula Tulum",
+  title: "Quiénes somos — ropa hecha a mano en Tulum",
   description:
-    "Cómo se hace la ropa de Shaula Tulum: gasa de algodón lavada, teñido artesanal en tandas cortas y botones de coco cosidos a mano.",
+    "Cómo se hace la ropa de Shaula Tulum: gasa de algodón lavada, teñido artesanal en tandas cortas y botones de coco cosidos a mano en Quintana Roo.",
+  alternates: { canonical: "/nosotros" },
+  openGraph: { type: "article", url: "/nosotros", title: "Quiénes somos · Shaula Tulum" },
 };
 
 const HITOS = [
@@ -36,10 +38,10 @@ export default function NosotrosPage() {
           fill priority sizes="100vw"
           className="-z-10 object-cover"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-tinta/85 via-tinta/40 to-tinta/10" aria-hidden />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-tinta/92 from-15% via-tinta/62 via-50% to-transparent" aria-hidden />
         <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-24 sm:px-8 sm:pb-16">
-          <p className="eyebrow text-cal [text-shadow:0_1px_2px_rgb(0_0_0/0.65),0_2px_16px_rgb(0_0_0/0.8)]">Quiénes somos</p>
-          <h1 className="display-xl mt-4 max-w-[16ch] text-[36px] font-medium leading-[1.04] text-cal [text-shadow:0_2px_24px_rgb(0_0_0/0.35)] sm:text-[56px]">
+          <p className="eyebrow inline-flex items-center rounded-full bg-tinta/80 px-3.5 py-1.5 text-cal backdrop-blur-[2px]">Quiénes somos</p>
+          <h1 className="display-xl mt-4 max-w-[16ch] text-[36px] font-medium leading-[1.04] text-cal sm:text-[56px]">
             Una casa chica, a propósito.
           </h1>
         </div>

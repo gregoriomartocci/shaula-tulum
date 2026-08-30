@@ -119,6 +119,28 @@ los colores habría quedado como "look" y un retrato como foto de portada.
 Los nombres son descriptivos (`camisa-lila-1.jpg`, `pantalon-negro-1.jpg`,
 `video-camisa-terracota.mp4`) y un test verifica que toda ruta declarada exista.
 
+## Que Google entienda qué se vende
+
+| Qué | Dónde |
+|---|---|
+| `robots.txt` — todo indexable menos `/admin` | [`src/app/robots.ts`](src/app/robots.ts) |
+| `sitemap.xml` con las fotos de cada prenda, armado desde el catálogo | [`src/app/sitemap.ts`](src/app/sitemap.ts) |
+| Título, descripción, canónica y Open Graph por página | cada `page.tsx` |
+| `ClothingStore` en JSON-LD: dónde está el taller, que se vende a todo México, el Instagram | [`src/app/layout.tsx`](src/app/layout.tsx) |
+| `ProductGroup` con una variante por color, y `BreadcrumbList` | [`src/app/catalogo/[id]/page.tsx`](src/app/catalogo/[id]/page.tsx) |
+
+El `ProductGroup` va **sin `offers`** a propósito: no hay lista de precios
+publicada, y un precio inventado en los datos estructurados es de las pocas
+cosas por las que Google castiga a una tienda. Cargando los precios desde el
+panel, se agregan.
+
+`<html lang="es-MX">` y `og:locale = es_MX`: el país importa para a quién se
+le muestra el sitio.
+
+Las direcciones absolutas salen de [`src/lib/sitio.ts`](src/lib/sitio.ts), que
+lee el dominio de producción de Vercel — así que **el día que se conecte un
+dominio propio, el sitemap, las canónicas y el Open Graph se mudan solos**.
+
 ## Cómo se protege el panel
 
 El panel de `/admin` es de una sola persona: la marca cargando prendas. No hay

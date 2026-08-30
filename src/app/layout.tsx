@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Fraunces, Karla } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import DatosEstructurados from "@/components/DatosEstructurados";
+import { BASE, SITIO, url } from "@/lib/sitio";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -17,19 +19,74 @@ const karla = Karla({
   display: "swap",
 });
 
-/* Base para las direcciones absolutas de Open Graph. En Vercel la da la
-   plataforma; en local cae al puerto de desarrollo. */
-const BASE =
-  process.env.NEXT_PUBLIC_SITIO ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3200");
-
 export const metadata: Metadata = {
   metadataBase: new URL(BASE),
-  title: "Shaula Tulum · Camisas, pantalones y conjuntos hechos a mano",
-  description:
-    "Catálogo de Shaula Tulum: camisa, pantalón y conjunto en gasa de algodón lavada, teñidos a mano en tandas cortas. Once colores de camisa, cinco de pantalón.",
+  /* El título de la home lleva las palabras con las que alguien busca esto
+     —"camisas de algodón", "ropa artesanal", "Tulum"— antes que el nombre
+     de la marca, que todavía nadie conoce. Las demás páginas heredan la
+     plantilla y sólo ponen lo suyo. */
+  title: {
+    default: "Shaula Tulum · Camisas y pantalones de algodón hechos a mano en México",
+    template: "%s · Shaula Tulum",
+  },
+  description: SITIO.descripcion,
+  applicationName: SITIO.nombre,
+  keywords: [
+    "ropa artesanal mexicana", "camisas de algodón hechas a mano",
+    "gasa de algodón", "ropa de Tulum", "camisa cuello mao hombre",
+    "pantalón de pinzas algodón", "conjunto camisa y pantalón",
+    "ropa teñida a mano", "moda artesanal México", "ropa de lino y algodón Tulum",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITIO.nombre,
+    locale: "es_MX",
+    url: url("/"),
+    title: "Shaula Tulum · Ropa artesanal de gasa de algodón",
+    description: SITIO.descripcion,
+    images: [{ url: SITIO.og, width: 1200, height: 630, alt: "Camisas Shaula Tulum en todos sus colores" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shaula Tulum · Ropa artesanal de gasa de algodón",
+    description: SITIO.descripcion,
+    images: [SITIO.og],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  /* Safari convierte solo los números largos en enlaces de teléfono, y
+     "22 colores" no es un teléfono. */
+  formatDetection: { telephone: false, address: false },
+};
+
+/* Quién es la casa, para el buscador. `areaServed` dice México entero: se
+   vende a todo el país aunque el taller esté en Tulum. */
+const NEGOCIO = {
+  "@context": "https://schema.org",
+  "@type": "ClothingStore",
+  "@id": `${BASE}#negocio`,
+  name: SITIO.nombre,
+  description: SITIO.descripcion,
+  url: url("/"),
+  image: url(SITIO.og),
+  slogan: "Estilo atemporal.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: SITIO.ciudad,
+    addressRegion: SITIO.region,
+    addressCountry: SITIO.pais,
+  },
+  areaServed: { "@type": "Country", name: "México" },
+  sameAs: [SITIO.instagram],
+  knowsLanguage: ["es-MX"],
+  makesOffer: {
+    "@type": "Offer",
+    itemOffered: { "@type": "Product", name: "Ropa artesanal de gasa de algodón" },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -41,9 +98,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
        <html>. Con las clases de next/font en <body>, --font-fraunces no
        existe todavía en :root: --font-display queda inválida, y toda la
        tipografía de la casa cae a la fuente del sistema — en todos los
-       navegadores, sin un solo error en consola. */
-    <html lang="es" className={`${fraunces.variable} ${karla.variable}`}>
+       navegadores, sin un solo error en consola.
+
+       lang="es-MX" y no "es": el país importa para a quién se le muestra. */
+    <html lang={SITIO.idioma} className={`${fraunces.variable} ${karla.variable}`}>
       <body className="flex min-h-screen flex-col">
+        <DatosEstructurados datos={NEGOCIO} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

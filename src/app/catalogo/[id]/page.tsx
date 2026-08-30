@@ -4,8 +4,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import GaleriaPrenda from "@/components/GaleriaPrenda";
 import PrendaCard from "@/components/PrendaCard";
-import { CATEGORIAS, coloresDe, videosDe } from "@/data/productos";
+import DatosEstructurados from "@/components/DatosEstructurados";
+import { CATEGORIAS, coloresDe, videosDe, type Producto } from "@/data/productos";
 import { getProducto, getProductos } from "@/lib/catalogo";
+import { BASE, SITIO, url } from "@/lib/sitio";
 
 export async function generateStaticParams() {
   const productos = await getProductos();
@@ -18,10 +20,64 @@ export async function generateMetadata(
   const { id } = await params;
   const p = await getProducto(id);
   if (!p) return { title: "Prenda no encontrada · Shaula Tulum" };
+  const colores = coloresDe(p).join(", ");
   return {
-    title: `${p.nombre} · Shaula Tulum`,
-    description: `${p.subtitulo}. ${p.variantes.length} colores: ${coloresDe(p).join(", ")}.`,
-    openGraph: { images: p.variantes[0]?.fotos[0] ? [p.variantes[0].fotos[0]] : [] },
+    title: `${p.nombre} — ${p.subtitulo}`,
+    /* La descripción que sale en Google: qué es, de qué está hecha, en qué
+       colores y a dónde llega. Debajo de 160 caracteres para que no se
+       corte a la mitad. */
+    description: `${p.subtitulo}, en ${p.tela.toLowerCase()}. ${p.variantes.length} colores: ${colores}. Hecha a mano en Tulum, envíos a todo México.`,
+    alternates: { canonical: `/catalogo/${p.id}` },
+    openGraph: {
+      type: "website",
+      url: url(`/catalogo/${p.id}`),
+      title: `${p.nombre} · ${SITIO.nombre}`,
+      description: `${p.subtitulo}. ${p.variantes.length} colores teñidos a mano.`,
+      images: p.variantes.flatMap((v) => v.fotos).slice(0, 4).map((f) => ({ url: f })),
+    },
+  };
+}
+
+/* La prenda, en el vocabulario de los buscadores. Los colores van como
+   variantes del mismo producto, que es lo que son.
+
+   Sin `offers` a propósito: no hay lista de precios publicada, y un precio
+   inventado en los datos estructurados es exactamente la clase de cosa por
+   la que Google penaliza una tienda. El día que haya precios, se agrega. */
+function comoProducto(p: Producto) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProductGroup",
+    "@id": `${BASE}/catalogo/${p.id}#producto`,
+    name: p.nombre,
+    description: p.descripcion,
+    url: url(`/catalogo/${p.id}`),
+    brand: { "@type": "Brand", name: SITIO.nombre },
+    material: p.tela,
+    countryOfOrigin: "MX",
+    audience: { "@type": "PeopleAudience", geographicArea: { "@type": "Country", name: "México" } },
+    variesBy: "https://schema.org/color",
+    hasVariant: p.variantes.map((v) => ({
+      "@type": "Product",
+      name: `${p.nombre} en ${v.nombre}`,
+      color: v.nombre,
+      material: p.tela,
+      size: p.talles,
+      image: v.fotos.map((f) => url(f)),
+      url: url(`/catalogo/${p.id}?color=${v.slug}`),
+    })),
+  };
+}
+
+function comoMigas(p: Producto, categoria?: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Catálogo", item: url("/catalogo") },
+      { "@type": "ListItem", position: 2, name: categoria ?? "", item: url(`/catalogo?categoria=${p.categoria}`) },
+      { "@type": "ListItem", position: 3, name: p.nombre, item: url(`/catalogo/${p.id}`) },
+    ],
   };
 }
 
@@ -43,6 +99,9 @@ export default async function ProductoPage({
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
+      <DatosEstructurados datos={comoProducto(p)} />
+      <DatosEstructurados datos={comoMigas(p, categoria?.nombre)} />
+
       <nav className="mb-6 flex items-center text-[13px] text-sombra">
         <Link href="/catalogo" className="-my-2.5 py-2.5 hover:text-madera">Catálogo</Link>
         <span className="mx-2 text-arena-hondo">/</span>

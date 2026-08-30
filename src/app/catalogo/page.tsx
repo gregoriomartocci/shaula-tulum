@@ -4,9 +4,17 @@ import { CATEGORIAS, type Categoria } from "@/data/productos";
 import { getProductos } from "@/lib/catalogo";
 
 export const metadata: Metadata = {
-  title: "Catálogo · Shaula Tulum",
+  title: "Catálogo — 22 colores de camisa, pantalón y conjunto",
   description:
-    "Camisas, pantalones y conjuntos de gasa de algodón, teñidos a mano. Buscá por color.",
+    "Camisas, pantalones y conjuntos de gasa de algodón teñidos a mano en Tulum. " +
+    "Once colores de camisa, cinco de pantalón, seis de conjunto. Envíos a todo México.",
+  alternates: { canonical: "/catalogo" },
+  openGraph: {
+    type: "website",
+    url: "/catalogo",
+    title: "Catálogo · Shaula Tulum",
+    description: "22 colores de camisa, pantalón y conjunto, teñidos a mano en tandas cortas.",
+  },
 };
 
 export default async function CatalogoPage({

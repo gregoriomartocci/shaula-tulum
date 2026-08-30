@@ -37,21 +37,31 @@ export default async function Home() {
           className="-z-10 object-cover object-center"
         />
         {/* Doble velo: uno de abajo hacia arriba para que el texto se lea, otro
-            desde la izquierda para sostener la columna de texto en desktop. */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-tinta/90 via-tinta/55 to-tinta/20" aria-hidden />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-tinta/60 via-tinta/20 to-transparent" aria-hidden />
+            desde la izquierda para sostener la columna en desktop.
+
+            El velo llega hasta la mitad de la foto y ahí se corta: así el
+            bloque de texto entero se apoya sobre una base pareja, en vez de
+            que cada renglón pelee con la ropa que tenga detrás. Es la
+            alternativa a ponerle sombra al texto, que sobre versalitas se
+            ve como una mancha. */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-tinta/92 from-15% via-tinta/62 via-50% to-transparent" aria-hidden />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-tinta/55 via-tinta/15 to-transparent" aria-hidden />
 
         <div className="mx-auto w-full max-w-6xl px-5 pb-14 pt-28 sm:px-8 sm:pb-20">
           {/* Sombra en la volanta: en versalitas y sobre ropa clara, el velo del
               hero no alcanza. La sombra la despega de la foto sin tener que
               oscurecer la imagen entera. */}
-          <p className="eyebrow text-cal [text-shadow:0_1px_2px_rgb(0_0_0/0.65),0_2px_16px_rgb(0_0_0/0.8)]">
+          {/* Chapita y no texto suelto: en versalitas claras sobre ropa clara
+              no hay velo que alcance, y ponerle sombra al texto se ve como una
+              mancha. Un fondo propio se lee sobre cualquier foto y parece una
+              decisión, que es lo que es. */}
+          <p className="eyebrow inline-flex items-center rounded-full bg-tinta/80 px-3.5 py-1.5 text-cal backdrop-blur-[2px]">
             Tulum · Quintana Roo
           </p>
-          <h1 className="display-xl mt-4 max-w-[13ch] text-[42px] font-medium leading-[1.02] text-cal [text-shadow:0_2px_24px_rgb(0_0_0/0.35)] sm:text-[68px]">
+          <h1 className="display-xl mt-4 max-w-[13ch] text-[42px] font-medium leading-[1.02] text-cal sm:text-[68px]">
             Estilo atemporal.
           </h1>
-          <p className="mt-5 max-w-[34rem] text-[16px] leading-relaxed text-cal/95 [text-shadow:0_1px_14px_rgb(0_0_0/0.4)] sm:text-[18px]">
+          <p className="mt-5 max-w-[34rem] text-[16px] leading-relaxed text-cal/95 sm:text-[18px]">
             Tres prendas hechas a mano — camisa, pantalón y el conjunto de las dos — en{" "}
             {colores.length} colores teñidos en tandas cortas. Gasa de algodón lavada, botones
             de coco, nada que caduque a fin de temporada.
