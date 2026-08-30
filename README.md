@@ -247,6 +247,16 @@ hay que reemplazarlo por el archivo real.
 **Tipografía.** *Fraunces* para títulos (serif con eje óptico variable, carácter
 artesanal) y *Karla* para texto.
 
+⚠️ Las variables de `next/font` van en **`<html>`, no en `<body>`**
+(`src/app/layout.tsx`). El bloque `@theme` de `globals.css` arma
+`--font-display` a partir de `var(--font-fraunces)`, y `@theme` declara sus
+variables en `:root` — que es `<html>`. Con las clases de fuente en `<body>`,
+`--font-fraunces` no existe todavía en `:root`, `--font-display` queda inválida
+y **toda la tipografía cae a la fuente del sistema, en todos los navegadores,
+sin un solo error en consola ni un 404**. Es un fallo silencioso: se ve
+"parecido pero peor". Si alguien mueve esas clases de vuelta al `<body>`,
+vuelve a pasar.
+
 **Un solo mundo visual.** No hay modo oscuro a propósito: un catálogo de gasa
 cruda en negro traiciona el concepto. Por eso todos los colores se pintan
 explícitos y la página se ve igual con el sistema en claro o en oscuro.

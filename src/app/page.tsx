@@ -42,11 +42,14 @@ export default async function Home() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-tinta/60 via-tinta/20 to-transparent" aria-hidden />
 
         <div className="mx-auto w-full max-w-6xl px-5 pb-14 pt-28 sm:px-8 sm:pb-20">
-          <p className="eyebrow text-cal/85">Tulum · Quintana Roo</p>
-          <h1 className="display-xl mt-4 max-w-[13ch] text-[42px] font-medium leading-[1.02] text-cal sm:text-[68px]">
+          {/* Sombra en la volanta: en versalitas y sobre ropa clara, el velo del
+              hero no alcanza. La sombra la despega de la foto sin tener que
+              oscurecer la imagen entera. */}
+          <p className="eyebrow text-cal [text-shadow:0_1px_12px_rgb(0_0_0/0.55)]">Tulum · Quintana Roo</p>
+          <h1 className="display-xl mt-4 max-w-[13ch] text-[42px] font-medium leading-[1.02] text-cal [text-shadow:0_2px_24px_rgb(0_0_0/0.35)] sm:text-[68px]">
             Estilo atemporal.
           </h1>
-          <p className="mt-5 max-w-[34rem] text-[16px] leading-relaxed text-cal/90 sm:text-[18px]">
+          <p className="mt-5 max-w-[34rem] text-[16px] leading-relaxed text-cal/95 [text-shadow:0_1px_14px_rgb(0_0_0/0.4)] sm:text-[18px]">
             Tres prendas hechas a mano — camisa, pantalón y el conjunto de las dos — en{" "}
             {colores.length} colores teñidos en tandas cortas. Gasa de algodón lavada, botones
             de coco, nada que caduque a fin de temporada.

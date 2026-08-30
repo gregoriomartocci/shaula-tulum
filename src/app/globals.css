@@ -29,7 +29,15 @@
   --font-cuerpo:  var(--font-karla), ui-sans-serif, system-ui, sans-serif;
 }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Red de seguridad: si algún día un bloque se pasa de ancho, la página
+     no se mueve de costado. `clip` y no `hidden` a propósito: hidden
+     convierte al elemento en contenedor de scroll y rompe el header
+     pegajoso. Los tests siguen mirando scrollWidth, así que esto tapa el
+     síntoma para el visitante sin escondernos el problema. */
+  overflow-x: clip;
+}
 
 body {
   background: var(--color-cal);

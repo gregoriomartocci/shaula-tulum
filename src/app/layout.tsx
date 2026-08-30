@@ -34,8 +34,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
-      <body className={`${fraunces.variable} ${karla.variable} flex min-h-screen flex-col`}>
+    /* Las variables de next/font van en <html>, NO en <body>.
+
+       El bloque @theme de globals.css arma --font-display a partir de
+       var(--font-fraunces), y @theme declara sus variables en :root, que es
+       <html>. Con las clases de next/font en <body>, --font-fraunces no
+       existe todavía en :root: --font-display queda inválida, y toda la
+       tipografía de la casa cae a la fuente del sistema — en todos los
+       navegadores, sin un solo error en consola. */
+    <html lang="es" className={`${fraunces.variable} ${karla.variable}`}>
+      <body className="flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
