@@ -38,7 +38,7 @@ export default function NosotrosPage() {
         />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-tinta/85 via-tinta/40 to-tinta/10" aria-hidden />
         <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-24 sm:px-8 sm:pb-16">
-          <p className="eyebrow text-cal [text-shadow:0_1px_12px_rgb(0_0_0/0.55)]">Quiénes somos</p>
+          <p className="eyebrow text-cal [text-shadow:0_1px_2px_rgb(0_0_0/0.65),0_2px_16px_rgb(0_0_0/0.8)]">Quiénes somos</p>
           <h1 className="display-xl mt-4 max-w-[16ch] text-[36px] font-medium leading-[1.04] text-cal [text-shadow:0_2px_24px_rgb(0_0_0/0.35)] sm:text-[56px]">
             Una casa chica, a propósito.
           </h1>

@@ -45,7 +45,9 @@ export default async function Home() {
           {/* Sombra en la volanta: en versalitas y sobre ropa clara, el velo del
               hero no alcanza. La sombra la despega de la foto sin tener que
               oscurecer la imagen entera. */}
-          <p className="eyebrow text-cal [text-shadow:0_1px_12px_rgb(0_0_0/0.55)]">Tulum · Quintana Roo</p>
+          <p className="eyebrow text-cal [text-shadow:0_1px_2px_rgb(0_0_0/0.65),0_2px_16px_rgb(0_0_0/0.8)]">
+            Tulum · Quintana Roo
+          </p>
           <h1 className="display-xl mt-4 max-w-[13ch] text-[42px] font-medium leading-[1.02] text-cal [text-shadow:0_2px_24px_rgb(0_0_0/0.35)] sm:text-[68px]">
             Estilo atemporal.
           </h1>
