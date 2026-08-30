@@ -119,6 +119,25 @@ los colores habría quedado como "look" y un retrato como foto de portada.
 Los nombres son descriptivos (`camisa-lila-1.jpg`, `pantalon-negro-1.jpg`,
 `video-camisa-terracota.mp4`) y un test verifica que toda ruta declarada exista.
 
+## WhatsApp
+
+En México la venta chica se cierra por WhatsApp, no por formulario de correo.
+La ficha, el formulario y la página de contacto abren el chat **con el mensaje
+ya escrito**, incluida la prenda y el color que la persona estaba mirando — esa
+pregunta de más ("¿cuál te interesa?") es donde se pierden la mitad de las
+conversaciones.
+
+El número **no está en el código**: sale de `NEXT_PUBLIC_WHATSAPP` (código de
+país, sin signos: `5219841234567`). Mientras no esté cargado, el sitio no
+muestra un solo botón de WhatsApp y coordina por correo, como antes. Un número
+de ejemplo publicado es peor que no tener botón: manda a la gente a un chat que
+no existe.
+
+| Variable | Para qué | Si falta |
+|---|---|---|
+| `NEXT_PUBLIC_WHATSAPP` | Botones de WhatsApp con mensaje escrito | No aparecen; queda el correo |
+| `NEXT_PUBLIC_CORREO` | Dirección de contacto | Usa `hola@shaulatulum.mx`, **que es de ejemplo** |
+
 ## Que Google entienda qué se vende
 
 | Qué | Dónde |
@@ -298,11 +317,11 @@ Lo que falta es **información del negocio**, no código:
 
 - **Precios.** Hoy la ficha dice "a consultar". Se cargan desde el panel (o en
   `src/data/productos.ts`, campo `precio`) y aparecen solos.
-- **Talles.** Están listados S · M · L · XL como supuesto razonable: hay que
+- **Tallas.** Están listadas S · M · L · XL como supuesto razonable: hay que
   confirmar los reales, prenda por prenda.
-- **Datos de contacto.** El correo, el WhatsApp y la dirección del taller son de
-  ejemplo. El Instagram sí es el real
-  ([@shaula_tulum](https://www.instagram.com/shaula_tulum/)).
+- **Datos de contacto.** El correo y la dirección del taller son de ejemplo, y
+  falta cargar `NEXT_PUBLIC_WHATSAPP` con el número real. El Instagram sí es el
+  real ([@shaula_tulum](https://www.instagram.com/shaula_tulum/)).
 - **Textos de la casa** (`/nosotros`, la sección "La idea" de la landing): están
   escritos a partir de lo que muestran las fotos —gasa de algodón, botones de
   coco, teñido en tandas— y hay que confirmarlos con la marca.

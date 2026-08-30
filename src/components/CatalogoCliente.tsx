@@ -133,7 +133,7 @@ export default function CatalogoCliente({
           <div className="rounded-[3px] border border-dashed border-arena-hondo px-6 py-16 text-center">
             <p className="font-display text-[20px] font-medium text-tinta">No tenemos ese color</p>
             <p className="medida mx-auto mt-2 text-[14px] text-sombra">
-              Probá con menos filtros, o escribinos: el teñido es artesanal y casi
+              Prueba con menos filtros, o escríbenos: el teñido es artesanal y casi
               cualquier tono se puede hacer a pedido.
             </p>
             <button

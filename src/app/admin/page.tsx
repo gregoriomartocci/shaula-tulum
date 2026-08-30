@@ -21,7 +21,7 @@ export default async function AdminPage() {
     return (
       <Aviso titulo="Falta configurar la contraseña del panel">
         <p>
-          Definí <code className="rounded bg-arena px-1.5 py-0.5 text-[13px]">ADMIN_PASSWORD</code> en
+          Define <code className="rounded bg-arena px-1.5 py-0.5 text-[13px]">ADMIN_PASSWORD</code> en
           las variables de entorno. En local va en <code className="rounded bg-arena px-1.5 py-0.5 text-[13px]">.env.local</code>;
           en Vercel, en Settings → Environment Variables.
         </p>
@@ -37,7 +37,7 @@ export default async function AdminPage() {
       <Aviso titulo="Falta conectar la base de datos">
         <p>
           El sitio está andando con el catálogo de ejemplo, pero para cargar y editar
-          piezas hace falta una base. Definí{" "}
+          piezas hace falta una base. Define{" "}
           <code className="rounded bg-arena px-1.5 py-0.5 text-[13px]">DATABASE_URL</code> y después
           corré <code className="rounded bg-arena px-1.5 py-0.5 text-[13px]">npm run db:push</code> y{" "}
           <code className="rounded bg-arena px-1.5 py-0.5 text-[13px]">npm run db:seed</code>.

@@ -34,7 +34,7 @@ export default async function CatalogoPage({
         <p className="medida mt-3 text-[15px] leading-relaxed text-sombra">
           La casa hace tres prendas: la camisa, el pantalón y el conjunto de las dos.
           Lo que cambia es el color, y el color se tiñe a mano — por eso cada tono
-          está fotografiado por separado. Buscá el que tenés en la cabeza.
+          está fotografiado por separado. Busca el que traes en la cabeza.
         </p>
       </div>
 

@@ -14,7 +14,7 @@ const HITOS = [
   {
     k: "Dónde",
     t: "Tulum, Quintana Roo",
-    d: "La marca es de acá y la ropa está pensada para este clima: treinta y cuatro grados, humedad y sol directo. Todo lo que no sobrevive a eso no entra al catálogo.",
+    d: "La marca es de aquí y la ropa está pensada para este clima: treinta y cuatro grados, humedad y sol directo. Todo lo que no sobrevive a eso no entra al catálogo.",
   },
   {
     k: "Con qué",

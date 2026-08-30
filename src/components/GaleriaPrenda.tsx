@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import BotonWhatsApp from "./BotonWhatsApp";
 import type { Producto, Variante } from "@/data/productos";
+import { hayWhatsApp } from "@/lib/sitio";
 
 /* La ficha de una prenda: elegir color y mirarlo.
 
@@ -230,7 +232,7 @@ export default function GaleriaPrenda({
         <dl className="mt-8 divide-y divide-arena border-y border-arena text-[14px]">
           {[
             ["Tela", producto.tela],
-            ["Talles", producto.talles.join(" · ")],
+            ["Tallas", producto.talles.join(" · ")],
             ["Colores", `${producto.variantes.length} tonos`],
           ].map(([k, v]) => (
             <div key={k} className="flex gap-5 py-3">
@@ -253,14 +255,25 @@ export default function GaleriaPrenda({
                 no hay compra en línea.
               </>
             )}{" "}
-            Escribinos qué prenda, qué talle y qué color —{" "}
+            Escríbenos qué prenda, qué talla y qué color —{" "}
             <span className="text-tinta">{variante.nombre}</span>, por ejemplo — y lo coordinamos por ahí.
           </p>
+
+          {/* El mensaje va escrito con la prenda y el color que la persona
+              está mirando: del otro lado nadie tiene que preguntar "¿cuál?". */}
+          <BotonWhatsApp
+            className="mt-4 w-full sm:w-auto"
+            mensaje={`Hola, me interesa la ${producto.nombre} en ${variante.nombre}. ¿Me pasan precio y tallas disponibles?`}
+          />
           <a
             href={`/contacto?prenda=${encodeURIComponent(producto.nombre)}&color=${encodeURIComponent(variante.nombre)}`}
-            className="mt-4 flex min-h-11 items-center justify-center rounded-full bg-madera px-6 text-[14px] text-cal transition-colors hover:bg-tinta sm:inline-flex"
+            className={
+              hayWhatsApp
+                ? "mt-3 flex min-h-11 items-center justify-center text-[14px] text-madera underline underline-offset-4 hover:text-tinta"
+                : "mt-4 flex min-h-12 items-center justify-center rounded-full bg-madera px-6 text-[15px] font-medium text-cal transition-colors hover:bg-tinta sm:inline-flex"
+            }
           >
-            Consultar por esta prenda
+            {hayWhatsApp ? "O escríbenos por correo" : "Consultar por esta prenda"}
           </a>
         </div>
       </div>

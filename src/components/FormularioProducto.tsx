@@ -49,7 +49,7 @@ export default function FormularioProducto({
             <input name="subtitulo" defaultValue={p?.subtitulo} className={CAMPO} placeholder="Gasa de algodón, cuello mao" />
           </Campo>
           {!p && (
-            <Campo etiqueta="Identificador" ayuda="Se usa en la dirección web. Si lo dejás vacío se arma solo con el nombre.">
+            <Campo etiqueta="Identificador" ayuda="Se usa en la dirección web. Si lo dejas vacío se arma solo con el nombre.">
               <input name="id" className={CAMPO} placeholder="camisa" />
             </Campo>
           )}
@@ -86,7 +86,7 @@ export default function FormularioProducto({
         </Campo>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Campo etiqueta="Talles" ayuda="Separados por coma.">
+          <Campo etiqueta="Tallas" ayuda="Separadas por coma.">
             <input name="talles" defaultValue={p?.talles?.join(", ")} className={CAMPO} placeholder="S, M, L, XL" />
           </Campo>
           <Campo etiqueta="Tono de respaldo" ayuda="Se usa como muestra de tela si falta una foto.">

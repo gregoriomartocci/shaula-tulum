@@ -1,21 +1,30 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import FormularioContacto from "@/components/FormularioContacto";
+import BotonWhatsApp from "@/components/BotonWhatsApp";
+import { CORREO, SITIO, enlaceWhatsApp, hayWhatsApp, whatsappLegible } from "@/lib/sitio";
 
 export const metadata: Metadata = {
   title: "Contacto — encargos y envíos a todo México",
   description:
-    "Escribinos qué prenda, qué talle y qué color. Encargos a medida, colores a pedido, " +
+    "Escríbenos qué prenda, qué talla y qué color. Encargos a medida, colores a pedido, " +
     "visitas al taller de Tulum y envíos a todo México.",
   alternates: { canonical: "/contacto" },
   openGraph: { type: "website", url: "/contacto", title: "Contacto · Shaula Tulum" },
 };
 
+/* Los canales salen de la configuración: el de WhatsApp aparece solo si
+   hay un número cargado. Publicar un número de ejemplo manda a la gente a
+   un chat que no existe, que es peor que no ofrecer WhatsApp. */
 const CANALES = [
-  { k: "Correo",    v: "hola@shaula_tulum.mx", href: "mailto:hola@shaula_tulum.mx" },
-  { k: "WhatsApp",  v: "+52 984 000 0000",         href: "https://wa.me/529840000000" },
-  { k: "Instagram", v: "@shaula_tulum",        href: "https://www.instagram.com/shaula_tulum/" },
-];
+  hayWhatsApp && {
+    k: "WhatsApp",
+    v: whatsappLegible(),
+    href: enlaceWhatsApp("Hola, les escribo desde la página de Shaula Tulum."),
+  },
+  { k: "Correo", v: CORREO, href: `mailto:${CORREO}` },
+  { k: "Instagram", v: "@shaula_tulum", href: SITIO.instagram },
+].filter(Boolean) as { k: string; v: string; href: string }[];
 
 export default function ContactoPage() {
   return (
@@ -23,9 +32,15 @@ export default function ContactoPage() {
       <p className="eyebrow">Hablemos</p>
       <h1 className="display-md mt-1.5 text-[32px] text-tinta sm:text-[40px]">Contacto</h1>
       <p className="medida mt-3 text-[15px] leading-relaxed text-sombra">
-        No vendemos por la web. Escribinos qué prenda querés, en qué talle y de qué
-        color, y lo coordinamos por correo o WhatsApp.
+        No vendemos por la web. Escríbenos qué prenda quieres, en qué talla y de qué
+        color, y lo coordinamos por WhatsApp o correo.
       </p>
+
+      <BotonWhatsApp
+        className="mt-7 w-full sm:w-auto sm:self-start"
+        texto="Escríbenos por WhatsApp"
+        mensaje="Hola, les escribo desde la página de Shaula Tulum."
+      />
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         <Suspense fallback={<div className="h-[420px] rounded-[3px] border border-dashed border-arena" />}>
@@ -57,7 +72,7 @@ export default function ContactoPage() {
               Tulum, Quintana Roo, México
             </p>
             <p className="mt-3 text-[13px] leading-relaxed text-sombra">
-              Se puede visitar con cita. Avisanos con un día de anticipación y te
+              Se puede visitar con cita. Avísanos con un día de anticipación y te
               mostramos los colores en mano, que es la única forma de elegir un teñido.
             </p>
           </div>
@@ -65,8 +80,8 @@ export default function ContactoPage() {
           <div>
             <p className="eyebrow">Encargos a medida</p>
             <p className="mt-2 text-[14px] leading-relaxed text-sombra">
-              Otro largo, otro talle, o un color que no está en la carta: el teñido
-              es artesanal y casi cualquier tono se puede hacer. Escribinos y lo
+              Otro largo, otra talla, o un color que no está en la carta: el teñido
+              es artesanal y casi cualquier tono se puede hacer. Escríbenos y lo
               vemos.
             </p>
           </div>

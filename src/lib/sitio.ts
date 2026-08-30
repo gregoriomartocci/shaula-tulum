@@ -34,3 +34,42 @@ export const SITIO = {
 export function url(ruta = "/") {
   return new URL(ruta, BASE).toString();
 }
+
+/* ══════════════════════════════════════════════════════════════
+   WhatsApp
+
+   En México la venta chica se cierra por WhatsApp, no por formulario de
+   correo. Pero el número va en una variable de entorno, no en el código:
+   mientras no esté cargado, el sitio NO muestra ningún botón de WhatsApp
+   y sigue funcionando con el correo. Un número de ejemplo publicado es
+   peor que no tener botón — manda a la gente a un chat que no existe.
+
+   Se carga en Vercel (Settings → Environment Variables) como
+   NEXT_PUBLIC_WHATSAPP, con código de país y sin signos: 5219841234567.
+   ══════════════════════════════════════════════════════════════ */
+export const WHATSAPP = (process.env.NEXT_PUBLIC_WHATSAPP ?? "").replace(/\D/g, "");
+
+/** Diez dígitos es el mínimo de un número real con código de país. */
+export const hayWhatsApp = WHATSAPP.length >= 10;
+
+export function enlaceWhatsApp(mensaje: string) {
+  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+}
+
+/** Cómo se muestra escrito: +52 984 123 4567
+
+    México se escribe +52 y nadie pone el 1 de en medio, aunque wa.me lo
+    necesite para enrutar a un celular. Se marca igual: el enlace usa el
+    número completo, y acá se muestra como lo escribe la gente. */
+export function whatsappLegible() {
+  const n = WHATSAPP;
+  if (n.length < 10) return "";
+  let pais = n.slice(0, n.length - 10);
+  if (pais === "521") pais = "52";
+  const resto = n.slice(-10);
+  return `+${pais} ${resto.slice(0, 3)} ${resto.slice(3, 6)} ${resto.slice(6)}`;
+}
+
+/* El correo también sale de acá: hoy es de ejemplo y hay que reemplazarlo
+   por el real de la marca. */
+export const CORREO = process.env.NEXT_PUBLIC_CORREO ?? "hola@shaulatulum.mx";

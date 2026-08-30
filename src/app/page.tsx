@@ -242,17 +242,17 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-5 pb-6 sm:px-8">
         <div className="rounded-[4px] border border-arena-hondo bg-cal-hondo px-6 py-11 text-center sm:px-12">
           <h2 className="display-md mx-auto max-w-[20ch] text-[24px] font-medium leading-tight text-tinta sm:text-[32px]">
-            ¿Querés un color que no está?
+            ¿Quieres un color que no está?
           </h2>
           <p className="medida mx-auto mt-3 text-[15px] leading-relaxed text-sombra">
             El teñido es artesanal: casi cualquier tono se puede hacer a pedido, y los
-            talles también. Escribinos y lo vemos.
+            talles también. Escríbenos y lo vemos.
           </p>
           <Link
             href="/contacto"
             className="mt-7 inline-flex min-h-12 items-center rounded-full bg-madera px-7 text-[15px] font-medium text-cal transition-colors hover:bg-tinta"
           >
-            Escribinos
+            Escríbenos
           </Link>
         </div>
       </section>

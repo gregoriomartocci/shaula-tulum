@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Marca } from "./Logo";
+import { SITIO } from "@/lib/sitio";
 
 export default function Footer() {
   return (
@@ -39,6 +40,16 @@ export default function Footer() {
           <ul className="mt-1 text-[14px]">
             <li><Link href="/nosotros" className="block py-2.5 text-sombra transition-colors hover:text-madera">Quiénes somos</Link></li>
             <li><Link href="/contacto" className="block py-2.5 text-sombra transition-colors hover:text-madera">Contacto</Link></li>
+            <li>
+              <a
+                href={SITIO.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block py-2.5 text-sombra transition-colors hover:text-madera"
+              >
+                Instagram
+              </a>
+            </li>
           </ul>
           <p className="mt-5 text-[13px] leading-relaxed text-sombra">
             Este sitio es un catálogo. No hay venta en línea: las prendas se
