@@ -6,19 +6,9 @@ import {
   CATEGORIAS, ORDENES,
   type Categoria, type OrdenSlug, type Producto,
 } from "@/data/productos";
-
-type RangoSlug = "todos" | "hasta-60" | "60-90" | "desde-90";
-
-const RANGOS: { slug: RangoSlug; nombre: string; test: (p: Producto) => boolean }[] = [
-  { slug: "todos",    nombre: "Cualquier precio", test: () => true },
-  { slug: "hasta-60", nombre: "Hasta $60",        test: (p) => p.precio <= 60 },
-  { slug: "60-90",    nombre: "$60 a $90",        test: (p) => p.precio > 60 && p.precio <= 90 },
-  { slug: "desde-90", nombre: "Más de $90",       test: (p) => p.precio > 90 },
-];
-
-function pesoDestacado(p: Producto) {
-  return (p.masVendido ? 4 : 0) + (p.trending ? 2 : 0) + (p.nuevo ? 1 : 0);
-}
+import {
+  RANGOS, filtrarYOrdenar, hayFiltrosActivos, type RangoSlug,
+} from "@/lib/catalogo-filtros";
 
 /* Los dos <select> comparten forma: la flecha va dibujada en el fondo para
    no depender del control nativo, que en iOS se ve distinto. */
@@ -61,30 +51,12 @@ export default function CatalogoCliente({
   const [rango, setRango] = useState<RangoSlug>("todos");
   const [orden, setOrden] = useState<OrdenSlug>("destacados");
 
-  const resultado = useMemo(() => {
-    const q = busqueda.trim().toLowerCase();
-    const testRango = RANGOS.find((r) => r.slug === rango)!.test;
+  const resultado = useMemo(
+    () => filtrarYOrdenar(productos, { busqueda, categoria, rango, orden }),
+    [productos, busqueda, categoria, rango, orden],
+  );
 
-    const filtrados = productos.filter((p) => {
-      if (categoria !== "todas" && p.categoria !== categoria) return false;
-      if (!testRango(p)) return false;
-      if (!q) return true;
-      return [p.nombre, p.tela, p.descripcion, ...p.colores]
-        .join(" ").toLowerCase().includes(q);
-    });
-
-    const ordenado = [...filtrados];
-    switch (orden) {
-      case "precio-asc":  ordenado.sort((a, b) => a.precio - b.precio); break;
-      case "precio-desc": ordenado.sort((a, b) => b.precio - a.precio); break;
-      case "nombre":      ordenado.sort((a, b) => a.nombre.localeCompare(b.nombre, "es")); break;
-      case "nuevos":      ordenado.sort((a, b) => Number(!!b.nuevo) - Number(!!a.nuevo) || a.nombre.localeCompare(b.nombre, "es")); break;
-      default:            ordenado.sort((a, b) => pesoDestacado(b) - pesoDestacado(a) || a.nombre.localeCompare(b.nombre, "es"));
-    }
-    return ordenado;
-  }, [productos, busqueda, categoria, rango, orden]);
-
-  const hayFiltros = busqueda !== "" || categoria !== "todas" || rango !== "todos";
+  const hayFiltros = hayFiltrosActivos({ busqueda, categoria, rango, orden });
 
   function limpiar() {
     setBusqueda(""); setCategoria("todas"); setRango("todos"); setOrden("destacados");

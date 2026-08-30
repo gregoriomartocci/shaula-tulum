@@ -1,12 +1,98 @@
+<div align="center">
+
 # Shaula Tulum
 
-Catálogo de ropa artesanal mexicana.
+**Catálogo de ropa artesanal mexicana.**
+Estilo atemporal, hecho 100% a mano por artesanos de México.
 
-> Estilo atemporal. Hecho 100% artesanal por artesanos de México.
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Drizzle](https://img.shields.io/badge/Drizzle-ORM-C5F74F?logo=drizzle&logoColor=black)
+![Neon](https://img.shields.io/badge/Neon-Postgres-00E599?logo=postgresql&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Vitest](https://img.shields.io/badge/tests-24%20passing-6E9F18?logo=vitest&logoColor=white)
 
-**No es una tienda**: no hay carrito, pasarela de pago ni stock. Es un catálogo
-navegable — se mira, se filtra, y la compra se coordina por contacto directo.
-Esa decisión está reflejada en toda la interfaz, no sólo en el texto.
+</div>
+
+<br>
+
+![Landing](docs/img/home.jpg)
+
+<br>
+
+## No es una tienda, y eso es una decisión
+
+No hay carrito, ni pasarela de pago, ni checkout. Es un catálogo navegable: se
+mira, se filtra, y la compra se coordina por contacto directo.
+
+Esa decisión no está sólo en el texto — está en toda la interfaz. Donde otra
+tienda pondría "Agregar al carrito", acá dice *"Consultá por esta pieza"*. Es
+una marca que produce en tandas cortas y conversa cada venta; una pasarela de
+pago sería mentirle al comprador sobre cómo funciona el negocio.
+
+## El catálogo
+
+24 piezas con búsqueda, filtro por categoría y por precio, y cuatro órdenes. La
+búsqueda no mira sólo el nombre: también la tela, la descripción y los colores —
+alguien que busca "lino" o "verde cenote" encuentra lo que busca.
+
+![Catálogo](docs/img/catalogo.jpg)
+
+## La ficha de cada pieza
+
+Tela, colores y talles, más las otras piezas de la misma familia. Las 24 fichas
+se pre-generan en el build, así que abren instantáneo.
+
+![Ficha de producto](docs/img/producto.jpg)
+
+## Nosotros
+
+![Nosotros](docs/img/nosotros.jpg)
+
+## Cómo se protege el panel
+
+El panel de `/admin` es de una sola persona: la dueña de la marca cargando
+piezas. No hay proveedor de identidad ni tabla de usuarios — hay una contraseña
+en variable de entorno y una cookie firmada con HMAC-SHA256.
+
+Que este README explique el mecanismo no lo debilita: la seguridad está en el
+secreto, no en el algoritmo. Lo que sí importa es dónde se verifica.
+
+```mermaid
+flowchart TB
+    A[POST a una Server Action] --> B["exigirSesion()"]
+    B --> C{¿Cookie firmada válida?}
+    C -->|no| D[redirect a /admin/login]
+    C -->|sí| E[Escribe en la base]
+```
+
+**Cada acción que modifica datos llama `exigirSesion()` en su primera línea** —
+crear, editar, borrar, publicar y ajustar stock. No alcanza con que el layout
+esconda los botones: alguien puede hacer POST a una Server Action directamente.
+La autorización vive en la capa de datos, no en la UI.
+
+Detalles que importan: la comparación de contraseñas usa `timingSafeEqual` para
+no filtrar información por cuánto tarda; la cookie es `httpOnly`, `sameSite=lax`
+y `secure` en producción; y `/admin` lleva `robots: noindex`.
+
+## Tests
+
+24 tests sobre la lógica pura, en ~90 ms, sin navegador ni base de datos:
+
+| Qué | Dónde |
+|---|---|
+| Filtrado del catálogo: categoría, rangos de precio, búsqueda por tela y color | [`catalogo-filtros.test.ts`](src/lib/catalogo-filtros.test.ts) |
+| Los cuatro órdenes, y el desempate por nombre | ídem |
+| Identificadores de URL: acentos, apóstrofes, largo máximo | [`slug.test.ts`](src/lib/slug.test.ts) |
+
+```bash
+npm test
+```
+
+El filtrado vivía adentro de un `useMemo` en `CatalogoCliente`, así que no había
+forma de probarlo sin montar el componente. Ahora está en
+[`src/lib/catalogo-filtros.ts`](src/lib/catalogo-filtros.ts) como función pura:
+entran productos y criterios, salen productos ordenados.
 
 ## Correr el proyecto
 
@@ -22,8 +108,6 @@ En `/admin`. Permite cargar piezas, editarlas, ocultarlas sin borrarlas, y
 llevar el inventario (`+` / `−` desde la lista, o un número exacto en la ficha).
 Cada movimiento de stock queda registrado en `movimientos_stock` con su motivo,
 así "¿por qué había 12 y ahora hay 4?" tiene respuesta.
-
-Necesita dos variables de entorno:
 
 | Variable | Para qué | Si falta |
 |---|---|---|
@@ -41,36 +125,24 @@ npm run db:seed    # carga las 24 piezas de ejemplo (no pisa lo que ya exista)
 npm run db:studio  # explorador visual de la base
 ```
 
-## Desplegar en Vercel
+## Comandos
 
-**Paso 1 — subir el código a GitHub** (necesita tu cuenta):
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Desarrollo, en el puerto 3200 |
+| `npm run build` / `npm start` | Build de producción y servirlo |
+| `npm test` | Los 24 tests |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
+| `npm run db:push` / `db:seed` / `db:studio` | Base de datos |
 
-```bash
-git add -A
-git commit -m "Shaula Tulum: catálogo y panel"
-# creá el repo en github.com y después:
-git remote add origin git@github.com:USUARIO/shaula-tulum.git
-git push -u origin main
-```
+## Desplegar
 
-**Paso 2 — importar en Vercel.** En [vercel.com/new](https://vercel.com/new),
-elegí el repo. Next.js se detecta solo, no hay que configurar el build.
+Corre en [Vercel](https://vercel.com/) con la base en Neon. Variables a
+configurar en Settings → Environment Variables:
 
-**Paso 3 — variables de entorno.** En Settings → Environment Variables:
-
-- `ADMIN_PASSWORD` — poné una contraseña larga y propia (**no** la de `.env.local`).
-
-**Paso 4 — la base.** En la pestaña Storage del proyecto, "Create Database" →
-Postgres (es Neon por dentro). Vercel inyecta `DATABASE_URL` solo. Después, desde
-tu máquina, con esa URL en `.env.local`:
-
-```bash
-npm run db:push
-npm run db:seed
-```
-
-**Alternativa sin GitHub**: `npx vercel` desde esta carpeta. Pide autenticación
-por navegador y sube el directorio directo.
+- `ADMIN_PASSWORD` — larga y propia, **no** la de `.env.local`
+- `DATABASE_URL` — la inyecta Vercel sola si creás la base desde la pestaña Storage
 
 ### Antes de salir a producción
 
@@ -88,6 +160,7 @@ por navegador y sube el directorio directo.
 | `/catalogo/[id]` | Ficha de cada pieza — 24 páginas pre-generadas en build |
 | `/nosotros` | Quiénes somos, cómo se produce, qué no hacemos |
 | `/contacto` | Formulario + canales directos + datos del taller |
+| `/admin` | Panel: piezas, inventario y movimientos de stock |
 
 ## Decisiones de diseño
 

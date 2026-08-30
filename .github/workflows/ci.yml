@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, tipos, tests y build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      # npm install y no npm ci: el lockfile generado en macOS y el generado en
+      # Linux son mutuamente excluyentes por un defecto de npm con las
+      # dependencias opcionales por plataforma (a uno le faltan @emnapi/core y
+      # @emnapi/runtime; el otro marca @esbuild/aix-ppc64 como obligatorio, y
+      # macOS lo rechaza). npm install resuelve las opcionales según la
+      # plataforma donde corre. Las versiones siguen fijadas por el lock.
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Chequeo de tipos
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      # Sin DATABASE_URL el build usa el catálogo de ejemplo — es el mismo
+      # camino que corre en un deploy antes de conectar la base.
+      - name: Build
+        run: npm run build

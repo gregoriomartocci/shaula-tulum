@@ -31,8 +31,11 @@ export default function FormularioContacto() {
       "",
       mensaje,
     ].filter(Boolean).join("\n");
-    window.location.href =
-      `mailto:${DESTINO}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    // assign() en vez de asignar a location.href: hace lo mismo, y no dispara
+    // la regla del compilador de React sobre mutar un valor externo.
+    window.location.assign(
+      `mailto:${DESTINO}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`,
+    );
   }
 
   const campo =

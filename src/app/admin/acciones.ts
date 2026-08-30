@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { productos as tabla, movimientosStock } from "@/db/schema";
 import { abrirSesion, cerrarSesion, estaLogueado, passwordValida } from "@/lib/auth";
+import { aSlug } from "@/lib/slug";
 
 async function exigirSesion() {
   if (!(await estaLogueado())) redirect("/admin/login");
@@ -31,11 +32,6 @@ export async function salir() {
 }
 
 /** Slug a partir del nombre, si no se dio uno. */
-function aSlug(s: string) {
-  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
-}
-
 function leerForm(form: FormData) {
   const lista = (k: string) =>
     String(form.get(k) ?? "").split(/[,\n]/).map((s) => s.trim()).filter(Boolean);
