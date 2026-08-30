@@ -245,8 +245,8 @@ export default async function Home() {
             ¿Quieres un color que no está?
           </h2>
           <p className="medida mx-auto mt-3 text-[15px] leading-relaxed text-sombra">
-            El teñido es artesanal: casi cualquier tono se puede hacer a pedido, y los
-            talles también. Escríbenos y lo vemos.
+            El teñido es artesanal: casi cualquier tono se puede hacer a pedido, y las
+            tallas también. Escríbenos y lo vemos.
           </p>
           <Link
             href="/contacto"
