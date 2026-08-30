@@ -65,13 +65,19 @@ h1, h2, h3, h4 {
 .display-xl { font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 144; }
 .display-md { font-variation-settings: "SOFT" 0, "WONK" 1, "opsz" 48; }
 
-/* Etiqueta en versalitas: el mismo tratamiento en toda la casa. */
+/* Etiqueta en versalitas: el mismo tratamiento en toda la casa.
+   En el teléfono va un punto más grande: 11px en versalitas con mucho
+   tracking, leído a la distancia de la mano y con sol de por medio, es
+   demasiado poco. */
 .eyebrow {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-sombra);
   font-weight: 700;
+}
+@media (min-width: 640px) {
+  .eyebrow { font-size: 11px; }
 }
 
 /* Medida de lectura cómoda: ~65 caracteres. */
@@ -97,8 +103,14 @@ h1, h2, h3, h4 {
   pointer-events: none;
 }
 
-/* Rail horizontal con scroll propio — el body nunca se mueve de lado. */
+/* Rail horizontal con scroll propio — el body nunca se mueve de lado.
+
+   `min-width: 0` no es decorativo: sin eso, un rail adentro de una celda
+   de grilla la estira hasta el ancho de su contenido (las celdas son
+   min-width:auto por defecto) y la PÁGINA entera se va de lado. Pasó con
+   la ficha del conjunto, que tiene seis fotos. */
 .rail {
+  min-width: 0;
   display: flex;
   gap: 1.25rem;
   overflow-x: auto;
@@ -108,6 +120,30 @@ h1, h2, h3, h4 {
   padding-bottom: 0.75rem;
 }
 .rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+/* En el teléfono el rail sangra hasta el borde de la pantalla: se ve que
+   la fila sigue, sin necesidad de una flecha que ocupe lugar. */
+@media (max-width: 639px) {
+  .rail-sangra {
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
+    scroll-padding-inline: 1.25rem;
+  }
+}
+
+/* Carrusel de la galería: una foto por pantalla, se pasa con el dedo.
+   Es el gesto que la gente ya hace con las fotos del teléfono. */
+.carrusel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  min-width: 0;
+  overscroll-behavior-x: contain;
+}
+.carrusel::-webkit-scrollbar { display: none; }
+.carrusel > * { flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

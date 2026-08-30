@@ -43,10 +43,10 @@ export default async function ProductoPage({
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-      <nav className="mb-7 text-[13px] text-sombra">
-        <Link href="/catalogo" className="hover:text-madera">Catálogo</Link>
+      <nav className="mb-6 flex items-center text-[13px] text-sombra">
+        <Link href="/catalogo" className="-my-2.5 py-2.5 hover:text-madera">Catálogo</Link>
         <span className="mx-2 text-arena-hondo">/</span>
-        <Link href={`/catalogo?categoria=${p.categoria}`} className="hover:text-madera">
+        <Link href={`/catalogo?categoria=${p.categoria}`} className="-my-2.5 py-2.5 hover:text-madera">
           {categoria?.nombre}
         </Link>
       </nav>
@@ -81,12 +81,12 @@ export default async function ProductoPage({
           </ul>
 
           <p className="eyebrow mt-8">Los colores</p>
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+          <div className="mt-2 flex flex-wrap gap-x-4">
             {p.variantes.map((v) => (
               <Link
                 key={v.slug}
                 href={`/catalogo/${p.id}?color=${v.slug}`}
-                className="flex items-center gap-2 text-[13.5px] text-sombra transition-colors hover:text-madera"
+                className="flex items-center gap-2 py-2 text-[13.5px] text-sombra transition-colors hover:text-madera"
               >
                 <span
                   className="h-3.5 w-3.5 rounded-full ring-1 ring-inset ring-black/15"
@@ -107,7 +107,7 @@ export default async function ProductoPage({
         <section className="mt-16 border-t border-arena pt-12">
           <p className="eyebrow">En movimiento</p>
           <h2 className="display-md mt-1.5 text-[24px] text-tinta">Cómo cae la tela</h2>
-          <div className="rail mt-6">
+          <div className="rail rail-sangra mt-6">
             {videos.map((v) => (
               <video
                 key={v.src}
@@ -118,7 +118,7 @@ export default async function ProductoPage({
                 loop
                 playsInline
                 preload="none"
-                className="h-[380px] w-[214px] rounded-[3px] object-cover ring-1 ring-inset ring-black/[0.07]"
+                className="h-[400px] w-[225px] rounded-[3px] object-cover ring-1 ring-inset ring-black/[0.07] sm:h-[380px] sm:w-[214px]"
               />
             ))}
           </div>

@@ -55,9 +55,11 @@ export default function FormularioContacto() {
     );
   }
 
+  /* 16px en el teléfono: por debajo de eso iOS hace zoom al enfocar el
+     campo, y el visitante termina con la página corrida de costado. */
   const campo =
-    "w-full rounded-[3px] border border-arena-hondo bg-cal px-3.5 py-2.5 text-[14px] text-tinta " +
-    "placeholder:text-sombra/70 focus:border-madera focus:outline-none";
+    "w-full rounded-[3px] border border-arena-hondo bg-cal px-3.5 py-2.5 text-[16px] text-tinta " +
+    "placeholder:text-sombra/70 focus:border-madera focus:outline-none sm:text-[14px]";
 
   return (
     <form onSubmit={enviar} className="space-y-4">
@@ -124,7 +126,7 @@ export default function FormularioContacto() {
         <button
           type="submit"
           disabled={!listo}
-          className="rounded-full bg-madera px-7 py-3 text-[14px] text-cal transition-colors
+          className="min-h-12 rounded-full bg-madera px-7 text-[15px] text-cal transition-colors
                      hover:bg-tinta disabled:cursor-not-allowed disabled:bg-arena-hondo disabled:text-sombra"
         >
           Preparar el mensaje

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import MuestraTela from "./MuestraTela";
+import VistaPrevia from "./VistaPrevia";
 import type { Ficha } from "@/lib/catalogo-filtros";
 
 /* Una tarjeta del catálogo = una prenda EN UN COLOR.
@@ -22,7 +23,9 @@ export default function FichaColor({
 }) {
   const { producto, variante } = f;
   const foto = variante.fotos[0];
-  const videos = variante.videos?.length ?? 0;
+  /* El primer video del color, si lo hay: con el mouse encima la tarjeta
+     deja de ser una foto y pasa a ser la tela moviéndose. */
+  const video = variante.videos?.[0];
 
   return (
     <Link
@@ -45,16 +48,19 @@ export default function FichaColor({
           <MuestraTela tono={variante.hex} className="h-full w-full" />
         )}
 
-        {videos > 0 && (
-          <span
-            className="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-full border border-cal/40 bg-tinta/55 px-2 py-[3px] text-[10px] font-semibold text-cal backdrop-blur-sm"
-            title="Esta prenda tiene video"
-          >
-            <svg viewBox="0 0 10 10" className="h-2 w-2 fill-current" aria-hidden>
-              <path d="M2 1l7 4-7 4z" />
-            </svg>
-            Video
-          </span>
+        {video && (
+          <>
+            <VistaPrevia src={video.previa ?? video.src} poster={video.poster} />
+            <span
+              className="absolute right-2.5 top-2.5 z-10 flex items-center gap-1 rounded-full border border-cal/40 bg-tinta/55 px-2 py-[3px] text-[10.5px] font-semibold text-cal backdrop-blur-sm"
+              title="Esta prenda tiene video"
+            >
+              <svg viewBox="0 0 10 10" className="h-2 w-2 fill-current" aria-hidden>
+                <path d="M2 1l7 4-7 4z" />
+              </svg>
+              Video
+            </span>
+          </>
         )}
       </div>
 

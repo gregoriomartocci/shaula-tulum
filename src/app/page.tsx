@@ -25,7 +25,9 @@ export default async function Home() {
       {/* ══ Hero ══
           El perchero con todos los tonos juntos: es la foto que cuenta el
           negocio entero — una prenda, muchos colores. */}
-      <section className="relative isolate flex min-h-[78vh] items-end overflow-hidden border-b border-arena sm:min-h-[86vh]">
+      {/* svh y no vh: en el teléfono, vh cuenta la barra del navegador como
+          si no existiera y el hero queda cortado hasta que se scrollea. */}
+      <section className="relative isolate flex min-h-[80svh] items-end overflow-hidden border-b border-arena sm:min-h-[86svh]">
         <Image
           src="/media/camisas-percha-1.jpg"
           alt="Camisas Shaula Tulum colgadas al sol, en todos sus colores"
@@ -52,13 +54,13 @@ export default async function Home() {
           <div className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
             <Link
               href="/catalogo"
-              className="rounded-full bg-cal px-7 py-3 text-[14px] font-medium text-tinta transition-colors hover:bg-arena"
+              className="flex min-h-12 items-center rounded-full bg-cal px-7 text-[15px] font-medium text-tinta transition-colors hover:bg-arena"
             >
               Ver los {colores.length} colores
             </Link>
             <Link
               href="/nosotros"
-              className="rounded-full border border-cal/50 px-7 py-3 text-[14px] text-cal transition-colors hover:bg-cal/10"
+              className="flex min-h-12 items-center rounded-full border border-cal/50 px-7 text-[15px] text-cal transition-colors hover:bg-cal/10"
             >
               Cómo trabajamos
             </Link>
@@ -98,17 +100,17 @@ export default async function Home() {
                   nunca salen exactamente iguales. Estas son las fotos de la tanda que hay.
                 </p>
               </div>
-              <Link href="/catalogo?categoria=camisas" className="shrink-0 text-[13px] text-madera underline underline-offset-4 hover:text-madera-claro">
+              <Link href="/catalogo?categoria=camisas" className="-my-2 shrink-0 py-2 text-[13.5px] text-madera underline underline-offset-4 hover:text-madera-claro">
                 Ver todos →
               </Link>
             </div>
 
-            <div className="rail mt-7">
+            <div className="rail rail-sangra mt-7">
               {camisa.variantes.map((v) => (
                 <Link
                   key={v.slug}
                   href={`/catalogo/${camisa.id}?color=${v.slug}`}
-                  className="group w-[132px] sm:w-[150px]"
+                  className="group w-[144px] sm:w-[150px]"
                 >
                   <div className="relative aspect-square overflow-hidden rounded-[3px] ring-1 ring-inset ring-black/[0.07]">
                     <Image
@@ -147,7 +149,7 @@ export default async function Home() {
             La gasa de algodón pesa poco y se mueve con el aire. Estos son los mismos
             colores del catálogo, filmados colgando al sol.
           </p>
-          <div className="rail mt-6">
+          <div className="rail rail-sangra mt-6">
             {videos.map((v) => (
               <video
                 key={v.src}
@@ -233,7 +235,7 @@ export default async function Home() {
           </p>
           <Link
             href="/contacto"
-            className="mt-7 inline-block rounded-full bg-madera px-7 py-3 text-[14px] font-medium text-cal transition-colors hover:bg-tinta"
+            className="mt-7 inline-flex min-h-12 items-center rounded-full bg-madera px-7 text-[15px] font-medium text-cal transition-colors hover:bg-tinta"
           >
             Escribinos
           </Link>

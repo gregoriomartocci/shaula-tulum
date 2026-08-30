@@ -14,8 +14,10 @@ import {
    son dos tarjetas, porque son dos cosas distintas para quien mira. Los
    filtros son dos: qué prenda, y una búsqueda que entiende colores. */
 
+/* 16px en el teléfono no es un capricho tipográfico: por debajo de eso,
+   iOS hace zoom solo al tocar el campo y deja la página corrida. */
 const SELECT =
-  "appearance-none rounded-full border border-arena-hondo bg-cal py-2 pl-3.5 pr-8 text-[13px] " +
+  "appearance-none rounded-full border border-arena-hondo bg-cal py-2.5 pl-3.5 pr-8 text-[16px] sm:py-2 sm:text-[13px] " +
   "text-tinta focus:border-madera focus:outline-none bg-no-repeat " +
   "[background-image:url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b6157' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")] " +
   "[background-position:right_0.85rem_center]";
@@ -28,7 +30,7 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={activo}
-      className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
+      className={`whitespace-nowrap rounded-full border px-4 py-2.5 text-[13.5px] transition-colors sm:px-3.5 sm:py-1.5 sm:text-[13px] ${
         activo
           ? "border-madera bg-madera text-cal"
           : "border-arena-hondo bg-transparent text-sombra hover:border-madera hover:text-madera"
@@ -80,8 +82,8 @@ export default function CatalogoCliente({
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
                 placeholder="Buscar un color: lila, terracota, crudo…"
-                className="w-full rounded-full border border-arena-hondo bg-cal px-4 py-2 text-[14px] text-tinta
-                           placeholder:text-sombra/70 focus:border-madera focus:outline-none"
+                className="w-full rounded-full border border-arena-hondo bg-cal px-4 py-2.5 text-[16px] text-tinta
+                           placeholder:text-sombra/70 focus:border-madera focus:outline-none sm:py-2 sm:text-[14px]"
               />
             </label>
 
@@ -120,7 +122,7 @@ export default function CatalogoCliente({
             <button
               type="button"
               onClick={limpiar}
-              className="text-[13px] text-madera underline underline-offset-4 hover:text-madera-claro"
+              className="-my-2 py-2 text-[13px] text-madera underline underline-offset-4 hover:text-madera-claro"
             >
               Limpiar
             </button>
@@ -137,7 +139,7 @@ export default function CatalogoCliente({
             <button
               type="button"
               onClick={limpiar}
-              className="mt-5 rounded-full border border-madera px-5 py-2 text-[13px] text-madera transition-colors hover:bg-madera hover:text-cal"
+              className="mt-5 min-h-11 rounded-full border border-madera px-5 text-[13.5px] text-madera transition-colors hover:bg-madera hover:text-cal"
             >
               Ver todos los colores
             </button>

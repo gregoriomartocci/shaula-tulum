@@ -15,6 +15,10 @@ export type Video = {
   src: string;
   /** Primer cuadro del video: se muestra hasta que el visitante lo pide. */
   poster: string;
+  /* Recorte de tres segundos y 480p (~1 MB) para la vista previa al pasar
+     el mouse por una tarjeta. El video entero pesa entre 1 y 6 MB: cargarlo
+     por un hover de paso sería tirar datos del visitante a la basura. */
+  previa?: string;
 };
 
 /** Un color de una prenda, con sus propias fotos y videos. */
@@ -79,24 +83,24 @@ const CAMISA_VARIANTES: Variante[] = [
     slug: "crudo", nombre: "Crudo", hex: "#e7dcc2",
     fotos: ["/media/camisa-crudo-1.jpg", "/media/camisa-crudo-2.jpg"],
     videos: [
-      { src: "/media/video-camisa-crudo.mp4", poster: "/media/video-camisa-crudo-poster.jpg" },
-      { src: "/media/video-camisa-crudo-2.mp4", poster: "/media/video-camisa-crudo-2-poster.jpg" },
+      { src: "/media/video-camisa-crudo.mp4", poster: "/media/video-camisa-crudo-poster.jpg", previa: "/media/previa-camisa-crudo.mp4" },
+      { src: "/media/video-camisa-crudo-2.mp4", poster: "/media/video-camisa-crudo-2-poster.jpg", previa: "/media/previa-camisa-crudo-2.mp4" },
     ],
   },
   {
     slug: "arena", nombre: "Arena", hex: "#a99b87",
     fotos: ["/media/camisa-arena-1.jpg", "/media/camisa-arena-3.jpg", "/media/camisa-arena-2.jpg"],
-    videos: [{ src: "/media/video-camisa-arena.mp4", poster: "/media/video-camisa-arena-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-arena.mp4", poster: "/media/video-camisa-arena-poster.jpg", previa: "/media/previa-camisa-arena.mp4" }],
   },
   {
     slug: "rosa-tulum", nombre: "Rosa Tulum", hex: "#c3a08e",
     fotos: ["/media/camisa-rosa-1.jpg"],
-    videos: [{ src: "/media/video-camisa-rosa.mp4", poster: "/media/video-camisa-rosa-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-rosa.mp4", poster: "/media/video-camisa-rosa-poster.jpg", previa: "/media/previa-camisa-rosa.mp4" }],
   },
   {
     slug: "terracota", nombre: "Terracota", hex: "#96493a",
     fotos: ["/media/camisa-terracota-1.jpg", "/media/camisa-terracota-2.jpg"],
-    videos: [{ src: "/media/video-camisa-terracota.mp4", poster: "/media/video-camisa-terracota-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-terracota.mp4", poster: "/media/video-camisa-terracota-poster.jpg", previa: "/media/previa-camisa-terracota.mp4" }],
   },
   { slug: "mostaza",  nombre: "Mostaza",       hex: "#c69210", fotos: ["/media/camisa-mostaza-1.jpg", "/media/look-atardecer-1.jpg"] },
   { slug: "pistacho", nombre: "Verde Pistacho", hex: "#adae70", fotos: ["/media/camisa-pistacho-1.jpg", "/media/camisa-pistacho-2.jpg", "/media/look-pistacho-5.jpg"] },
@@ -105,7 +109,7 @@ const CAMISA_VARIANTES: Variante[] = [
   {
     slug: "lila", nombre: "Lila", hex: "#a493b4",
     fotos: ["/media/camisa-lila-1.jpg", "/media/camisa-lila-2.jpg"],
-    videos: [{ src: "/media/video-camisa-lila.mp4", poster: "/media/video-camisa-lila-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-lila.mp4", poster: "/media/video-camisa-lila-poster.jpg", previa: "/media/previa-camisa-lila.mp4" }],
   },
   { slug: "grafito", nombre: "Gris Grafito", hex: "#4e5761", fotos: ["/media/camisa-grafito-1.jpg", "/media/camisa-grafito-2.jpg"] },
   { slug: "negro",   nombre: "Negro",        hex: "#22201e", fotos: ["/media/camisa-negro-1.jpg"] },
@@ -141,7 +145,7 @@ const CONJUNTO_VARIANTES: Variante[] = [
       "/media/camisa-crudo-1.jpg", "/media/pantalon-crudo-1.jpg",
       "/media/pantalon-crudo-2.jpg", "/media/look-atardecer-1.jpg",
     ],
-    videos: [{ src: "/media/video-camisa-crudo.mp4", poster: "/media/video-camisa-crudo-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-crudo.mp4", poster: "/media/video-camisa-crudo-poster.jpg", previa: "/media/previa-camisa-crudo.mp4" }],
   },
   {
     slug: "arena", nombre: "Arena", hex: "#c0b096",
@@ -149,14 +153,14 @@ const CONJUNTO_VARIANTES: Variante[] = [
       "/media/look-arena-1.jpg", "/media/camisa-arena-3.jpg",
       "/media/pantalon-camel-1.jpg", "/media/camisa-arena-1.jpg",
     ],
-    videos: [{ src: "/media/video-camisa-arena.mp4", poster: "/media/video-camisa-arena-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-arena.mp4", poster: "/media/video-camisa-arena-poster.jpg", previa: "/media/previa-camisa-arena.mp4" }],
   },
   {
     slug: "terracota", nombre: "Terracota", hex: "#96493a",
     fotos: [
       "/media/camisa-terracota-1.jpg", "/media/pantalon-terracota-1.jpg", "/media/camisa-terracota-2.jpg",
     ],
-    videos: [{ src: "/media/video-camisa-terracota.mp4", poster: "/media/video-camisa-terracota-poster.jpg" }],
+    videos: [{ src: "/media/video-camisa-terracota.mp4", poster: "/media/video-camisa-terracota-poster.jpg", previa: "/media/previa-camisa-terracota.mp4" }],
   },
   {
     slug: "olivo", nombre: "Verde Olivo", hex: "#5f6b4e",

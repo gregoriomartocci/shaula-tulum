@@ -33,11 +33,11 @@ export default function ContactoPage() {
             <p className="eyebrow">Directo</p>
             <ul className="mt-3 divide-y divide-arena border-y border-arena">
               {CANALES.map((c) => (
-                <li key={c.k} className="flex items-baseline gap-4 py-3">
+                <li key={c.k} className="flex items-center gap-4">
                   <span className="w-24 shrink-0 text-[13px] text-sombra">{c.k}</span>
                   <a
                     href={c.href}
-                    className="text-[14px] text-tinta underline underline-offset-4 hover:text-madera"
+                    className="flex min-h-12 flex-1 items-center text-[15px] text-tinta underline underline-offset-4 hover:text-madera sm:min-h-0 sm:py-3 sm:text-[14px]"
                   >
                     {c.v}
                   </a>

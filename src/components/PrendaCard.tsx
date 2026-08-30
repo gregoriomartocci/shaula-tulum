@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import MuestraTela from "./MuestraTela";
-import { fotoPrincipal, type Producto } from "@/data/productos";
+import VistaPrevia from "./VistaPrevia";
+import { fotoPrincipal, videosDe, type Producto } from "@/data/productos";
 
 /* La tarjeta grande de una prenda entera — camisa, pantalón o conjunto.
 
@@ -11,6 +12,7 @@ import { fotoPrincipal, type Producto } from "@/data/productos";
 
 export default function PrendaCard({ p, prioridad }: { p: Producto; prioridad?: boolean }) {
   const foto = fotoPrincipal(p);
+  const video = videosDe(p)[0];
 
   return (
     <Link href={`/catalogo/${p.id}`} className="group block">
@@ -27,6 +29,7 @@ export default function PrendaCard({ p, prioridad }: { p: Producto; prioridad?: 
         ) : (
           <MuestraTela tono={p.tono} className="h-full w-full" />
         )}
+        {video && <VistaPrevia src={video.previa ?? video.src} poster={video.poster} />}
       </div>
 
       <div className="pt-4">

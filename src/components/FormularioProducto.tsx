@@ -8,7 +8,7 @@ import type { ProductoDb } from "@/db/schema";
 type Accion = (prev: unknown, form: FormData) => Promise<{ error?: string } | void>;
 
 const CAMPO =
-  "w-full rounded-[3px] border border-arena-hondo bg-cal px-3.5 py-2.5 text-[14px] " +
+  "w-full rounded-[3px] border border-arena-hondo bg-cal px-3.5 py-2.5 text-[16px] sm:text-[14px] " +
   "text-tinta placeholder:text-sombra/60 focus:border-madera focus:outline-none";
 
 function Campo({

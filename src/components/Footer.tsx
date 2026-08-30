@@ -18,7 +18,7 @@ export default function Footer() {
 
         <div>
           <p className="eyebrow">Catálogo</p>
-          <ul className="mt-3 space-y-1.5 text-[14px]">
+          <ul className="mt-1 text-[14px]">
             {[
               ["/catalogo", "Ver todo"],
               ["/catalogo?categoria=camisas", "Camisas"],
@@ -26,7 +26,7 @@ export default function Footer() {
               ["/catalogo?categoria=conjuntos", "Conjuntos"],
             ].map(([href, txt]) => (
               <li key={href}>
-                <Link href={href} className="text-sombra transition-colors hover:text-madera">
+                <Link href={href} className="block py-2.5 text-sombra transition-colors hover:text-madera">
                   {txt}
                 </Link>
               </li>
@@ -36,9 +36,9 @@ export default function Footer() {
 
         <div>
           <p className="eyebrow">La casa</p>
-          <ul className="mt-3 space-y-1.5 text-[14px]">
-            <li><Link href="/nosotros" className="text-sombra transition-colors hover:text-madera">Quiénes somos</Link></li>
-            <li><Link href="/contacto" className="text-sombra transition-colors hover:text-madera">Contacto</Link></li>
+          <ul className="mt-1 text-[14px]">
+            <li><Link href="/nosotros" className="block py-2.5 text-sombra transition-colors hover:text-madera">Quiénes somos</Link></li>
+            <li><Link href="/contacto" className="block py-2.5 text-sombra transition-colors hover:text-madera">Contacto</Link></li>
           </ul>
           <p className="mt-5 text-[13px] leading-relaxed text-sombra">
             Este sitio es un catálogo. No hay venta en línea: las prendas se

@@ -117,7 +117,7 @@ export default function NosotrosPage() {
         <div className="mt-12">
           <Link
             href="/catalogo"
-            className="inline-block rounded-full bg-madera px-7 py-3 text-[14px] text-cal transition-colors hover:bg-tinta"
+            className="inline-flex min-h-12 items-center rounded-full bg-madera px-7 text-[15px] text-cal transition-colors hover:bg-tinta"
           >
             Ver el catálogo
           </Link>

@@ -18,7 +18,7 @@ export default function LoginPage() {
           <span className="eyebrow mb-1.5 block">Contraseña</span>
           <input
             type="password" name="password" required autoFocus
-            className="w-full rounded-[3px] border border-arena-hondo bg-cal px-3.5 py-2.5 text-[14px]
+            className="w-full rounded-[3px] border border-arena-hondo bg-cal px-3.5 py-2.5 text-[16px] sm:text-[14px]
                        text-tinta focus:border-madera focus:outline-none"
           />
         </label>
