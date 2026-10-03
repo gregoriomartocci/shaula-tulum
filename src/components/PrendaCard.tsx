@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import MuestraTela from "./MuestraTela";
 import VistaPrevia from "./VistaPrevia";
-import { fotoPrincipal, videosDe, type Producto } from "@/data/productos";
+import { formatoPrecio, fotoPrincipal, rangoPrecios, videosDe, type Producto } from "@/data/productos";
 
-/* La tarjeta grande de una prenda entera — camisa, pantalón o conjunto.
+/* La tarjeta grande de una prenda entera — camisa o pantalón.
 
    Va en la landing, donde lo que importa no es un color sino la prenda y
    cuántos tonos hay de ella. Los colores se muestran como puntos: es la
@@ -13,6 +13,7 @@ import { fotoPrincipal, videosDe, type Producto } from "@/data/productos";
 export default function PrendaCard({ p, prioridad }: { p: Producto; prioridad?: boolean }) {
   const foto = fotoPrincipal(p);
   const video = videosDe(p)[0];
+  const rango = rangoPrecios(p);
 
   return (
     <Link href={`/catalogo/${p.id}`} className="group block">
@@ -37,6 +38,11 @@ export default function PrendaCard({ p, prioridad }: { p: Producto; prioridad?: 
           {p.nombre}
         </h3>
         <p className="mt-1 text-[13.5px] text-sombra">{p.subtitulo}</p>
+        {rango && (
+          <p className="mt-1.5 text-[15px] tabular-nums text-tinta">
+            {rango.min === rango.max ? formatoPrecio(rango.min) : `Desde ${formatoPrecio(rango.min)}`}
+          </p>
+        )}
 
         <div className="mt-3 flex flex-wrap items-center gap-1.5">
           {p.variantes.map((v) => (

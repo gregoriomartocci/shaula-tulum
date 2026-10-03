@@ -1,7 +1,7 @@
 import { asc, eq } from "drizzle-orm";
 import { db, hayBase } from "@/db";
 import { productos as tabla } from "@/db/schema";
-import { PRODUCTOS as SEMILLA, type Producto } from "@/data/productos";
+import { CATEGORIAS, PRODUCTOS as SEMILLA, type Producto } from "@/data/productos";
 
 /* ══════════════════════════════════════════════════════════════
    Única puerta de entrada a los productos.
@@ -22,14 +22,21 @@ function aProducto(f: typeof tabla.$inferSelect): Producto {
     nombre: f.nombre,
     subtitulo: f.subtitulo || semilla?.subtitulo || "",
     categoria: f.categoria as Producto["categoria"],
-    precio: f.precio ?? undefined,
+    precio: f.precio ?? semilla?.precio,
     tono: f.tono,
     tela: f.tela,
     descripcion: f.descripcion,
     detalles: f.detalles ?? [],
     cuidado: f.cuidado,
     talles: f.talles ?? [],
-    variantes: f.variantes?.length ? f.variantes : (semilla?.variantes ?? []),
+    variantes: f.variantes?.length
+      ? f.variantes.map((v) => ({
+          ...v,
+          /* Las filas sembradas antes de que hubiera precios por color no
+             lo tienen: se toma el de la semilla para ese mismo color. */
+          precio: v.precio ?? semilla?.variantes.find((s) => s.slug === v.slug)?.precio,
+        }))
+      : (semilla?.variantes ?? []),
     ambiente: f.ambiente?.length ? f.ambiente : (semilla?.ambiente ?? []),
     masVendido: f.masVendido,
     trending: f.trending,
@@ -46,13 +53,22 @@ export async function getProductos(): Promise<Producto[]> {
   // Base vacía (recién creada, sin sembrar): mejor mostrar la semilla que
   // un catálogo en blanco.
   if (!filas.length) return SEMILLA;
-  return filas.map(aProducto).filter((p) => p.variantes.length > 0);
+  return filas.map(aProducto).filter((p) => p.variantes.length > 0 && categoriaVigente(p));
+}
+
+/* Una fila de la base puede tener una categoría que el sitio ya no ofrece
+   (los conjuntos se dieron de baja). Esas prendas no se muestran. */
+function categoriaVigente(p: Producto) {
+  return CATEGORIAS.some((c) => c.slug === p.categoria);
 }
 
 export async function getProducto(id: string): Promise<Producto | null> {
   if (!db) return SEMILLA.find((p) => p.id === id) ?? null;
   const [fila] = await db.select().from(tabla).where(eq(tabla.id, id)).limit(1);
-  if (fila) return aProducto(fila);
+  if (fila) {
+    const p = aProducto(fila);
+    return categoriaVigente(p) ? p : null;
+  }
   return SEMILLA.find((p) => p.id === id) ?? null;
 }
 

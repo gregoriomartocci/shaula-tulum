@@ -11,15 +11,15 @@ export const BASE =
   process.env.NEXT_PUBLIC_SITIO ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3200");
+    : "http://localhost:3300");
 
 export const SITIO = {
   nombre: "Shaula Tulum",
   /* La frase que aparece bajo el título en Google. Dice qué se vende, de
      qué está hecho y dónde: las tres cosas que alguien escribe al buscar. */
   descripcion:
-    "Camisas, pantalones y conjuntos de gasa de algodón, hechos y teñidos a mano en Tulum. " +
-    "22 colores en tandas cortas. Envíos a todo México.",
+    "Camisas y pantalones de gasa de algodón, hechos y teñidos a mano en Tulum. " +
+    "16 colores en tandas cortas. Envíos a todo México.",
   lema: "Ropa artesanal mexicana de gasa de algodón",
   instagram: "https://www.instagram.com/shaula_tulum/",
   ciudad: "Tulum",

@@ -25,7 +25,7 @@ export interface Criterios {
 }
 
 /** El orden natural de las prendas: como se viste uno, de arriba abajo. */
-const ORDEN_PRENDA: Categoria[] = ["camisas", "pantalones", "conjuntos"];
+const ORDEN_PRENDA: Categoria[] = ["camisas", "pantalones"];
 
 export function fichas(productos: Producto[]): Ficha[] {
   return productos.flatMap((producto) =>
@@ -38,7 +38,7 @@ export function fichas(productos: Producto[]): Ficha[] {
 }
 
 /* La búsqueda mira el color de ESTA ficha, el nombre de la prenda, la tela
-   y la descripción — alguien que escribe "algodón", "lila" o "conjunto"
+   y la descripción — alguien que escribe "algodón", "lila" o "pantalón"
    tiene que encontrar algo.
 
    Ojo con lo que NO mira: los otros colores de la misma prenda. Si los

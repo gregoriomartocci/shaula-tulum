@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import BotonWhatsApp from "./BotonWhatsApp";
-import type { Producto, Variante } from "@/data/productos";
+import { formatoPrecio, precioDe, type Producto, type Variante } from "@/data/productos";
 import { hayWhatsApp } from "@/lib/sitio";
 
 /* La ficha de una prenda: elegir color y mirarlo.
@@ -45,6 +45,7 @@ export default function GaleriaPrenda({
   const carrusel = useRef<HTMLDivElement>(null);
 
   const variante = producto.variantes[iColor] ?? producto.variantes[0];
+  const precio = precioDe(producto, variante);
   const medios = useMemo(() => mediosDe(variante), [variante]);
 
   useEffect(() => {
@@ -244,9 +245,9 @@ export default function GaleriaPrenda({
 
         <div className="mt-7 rounded-[3px] border border-arena-hondo bg-cal-hondo px-5 py-5">
           <p className="text-[14px] leading-relaxed text-tinta">
-            {producto.precio != null ? (
+            {precio != null ? (
               <>
-                <span className="text-[20px] tabular-nums">${producto.precio}</span> — la compra se
+                <span className="text-[20px] tabular-nums">{formatoPrecio(precio)}</span> — la compra se
                 coordina por contacto directo.
               </>
             ) : (
@@ -263,7 +264,7 @@ export default function GaleriaPrenda({
               está mirando: del otro lado nadie tiene que preguntar "¿cuál?". */}
           <BotonWhatsApp
             className="mt-4 w-full sm:w-auto"
-            mensaje={`Hola, me interesa la ${producto.nombre} en ${variante.nombre}. ¿Me pasan precio y tallas disponibles?`}
+            mensaje={`Hola, me interesa la ${producto.nombre} en ${variante.nombre}. ${precio != null ? "¿Me pasan las tallas disponibles?" : "¿Me pasan precio y tallas disponibles?"}`}
           />
           <a
             href={`/contacto?prenda=${encodeURIComponent(producto.nombre)}&color=${encodeURIComponent(variante.nombre)}`}

@@ -7,7 +7,7 @@ import { CORREO, SITIO, enlaceWhatsApp, hayWhatsApp, whatsappLegible } from "@/l
 export const metadata: Metadata = {
   title: "Contacto — encargos y envíos a todo México",
   description:
-    "Escríbenos qué prenda, qué talla y qué color. Encargos a medida, colores a pedido, " +
+    "Escríbenos qué prenda, qué talla y qué color. Encargos especiales para eventos, " +
     "visitas al taller de Tulum y envíos a todo México.",
   alternates: { canonical: "/contacto" },
   openGraph: { type: "website", url: "/contacto", title: "Contacto · Shaula Tulum" },
@@ -36,11 +36,21 @@ export default function ContactoPage() {
         color, y lo coordinamos por WhatsApp o correo.
       </p>
 
-      <BotonWhatsApp
-        className="mt-7 w-full sm:w-auto sm:self-start"
-        texto="Escríbenos por WhatsApp"
-        mensaje="Hola, les escribo desde la página de Shaula Tulum."
-      />
+      <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+        <BotonWhatsApp
+          className="w-full sm:w-auto"
+          texto="Escríbenos por WhatsApp"
+          mensaje="Hola, les escribo desde la página de Shaula Tulum."
+        />
+        <a
+          href={SITIO.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex min-h-12 items-center justify-center rounded-full border border-madera/40 px-6 text-[15px] text-tinta transition-colors hover:bg-arena"
+        >
+          Instagram · @shaula_tulum
+        </a>
+      </div>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         <Suspense fallback={<div className="h-[420px] rounded-[3px] border border-dashed border-arena" />}>
@@ -78,11 +88,9 @@ export default function ContactoPage() {
           </div>
 
           <div>
-            <p className="eyebrow">Encargos a medida</p>
+            <p className="eyebrow">Encargos especiales</p>
             <p className="mt-2 text-[14px] leading-relaxed text-sombra">
-              Otro largo, otra talla, o un color que no está en la carta: el teñido
-              es artesanal y casi cualquier tono se puede hacer. Escríbenos y lo
-              vemos.
+              Tallas, cantidades y ropa para eventos. Escríbenos y lo vemos.
             </p>
           </div>
         </aside>

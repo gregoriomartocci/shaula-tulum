@@ -210,7 +210,7 @@ npm test
 ```bash
 npm install
 cp .env.example .env.local   # y completá ADMIN_PASSWORD
-npm run dev                  # http://localhost:3200
+npm run dev                  # http://localhost:3300
 ```
 
 ## Panel de administración
@@ -240,7 +240,7 @@ npm run db:studio  # explorador visual de la base
 
 | Comando | Qué hace |
 |---|---|
-| `npm run dev` | Desarrollo, en el puerto 3200 |
+| `npm run dev` | Desarrollo, en el puerto 3300 |
 | `npm run build` / `npm start` | Build de producción y servirlo |
 | `npm test` | Los 27 tests |
 | `npm run typecheck` | `tsc --noEmit` |

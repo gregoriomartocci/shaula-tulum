@@ -41,13 +41,13 @@ export default function Logo({
 }) {
   return (
     <span className={`flex items-center gap-3 leading-none ${className}`}>
-      <Marca className="h-9 w-auto shrink-0 text-tinta sm:h-10" />
-      {/* Por debajo de 360px de ancho —un iPhone chico, o uno normal con el
+      <Marca className="h-10 w-auto shrink-0 text-tinta sm:h-11" />
+      {/* Por debajo de 380px de ancho —un iPhone chico, o uno normal con el
           zoom de Safari al 125%— el nombre escrito se esconde y queda la
           marca sola. Es preferible eso a que la navegación se corte. */}
-      <span className="flex flex-col leading-none max-[359px]:hidden">
+      <span className="flex flex-col leading-none max-[379px]:hidden">
         <span
-          className="font-display text-[20px] font-semibold tracking-[0.01em] text-tinta sm:text-[23px]"
+          className="font-display text-[22px] font-semibold tracking-[0.01em] text-tinta sm:text-[26px]"
           style={{ fontVariationSettings: '"SOFT" 0, "WONK" 1, "opsz" 48' }}
         >
           Shaula

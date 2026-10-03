@@ -116,7 +116,7 @@ h1, h2, h3, h4 {
    `min-width: 0` no es decorativo: sin eso, un rail adentro de una celda
    de grilla la estira hasta el ancho de su contenido (las celdas son
    min-width:auto por defecto) y la PÁGINA entera se va de lado. Pasó con
-   la ficha del conjunto, que tiene seis fotos. */
+   una ficha de seis fotos. */
 .rail {
   min-width: 0;
   display: flex;

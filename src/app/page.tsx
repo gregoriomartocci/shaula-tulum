@@ -1,22 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Icono as IconoWhatsApp } from "@/components/BotonWhatsApp";
 import PrendaCard from "@/components/PrendaCard";
 import { videosDe } from "@/data/productos";
 import { getProductos } from "@/lib/catalogo";
-import { fichas } from "@/lib/catalogo-filtros";
+import { SITIO, enlaceWhatsApp, hayWhatsApp } from "@/lib/sitio";
 
 /* Los looks: fotos de la ropa puesta, en Tulum y en la calle. No son de
    una prenda ni de un color — son de la marca. */
 const LOOKS = [
   { src: "/media/look-pistacho-2.jpg", alt: "Camisa verde pistacho contra una pared amarilla en Tulum" },
   { src: "/media/look-arena-1.jpg",    alt: "Camisa crudo y pantalón arena, caminando por el centro" },
-  { src: "/media/look-pistacho-3.jpg", alt: "Conjunto pistacho con pantalón corto arena" },
+  { src: "/media/look-pistacho-3.jpg", alt: "Camisa pistacho con pantalón corto arena" },
   { src: "/media/look-atardecer-1.jpg", alt: "Camisa mostaza y camisa crudo frente al mar al atardecer" },
 ];
 
 export default async function Home() {
   const productos = await getProductos();
-  const colores = fichas(productos);
   const camisa = productos.find((p) => p.categoria === "camisas");
   const videos = productos.flatMap(videosDe).slice(0, 4);
 
@@ -58,44 +58,64 @@ export default async function Home() {
           <p className="eyebrow inline-flex items-center rounded-full bg-tinta/80 px-3.5 py-1.5 text-cal backdrop-blur-[2px]">
             Tulum · Quintana Roo
           </p>
-          <h1 className="display-xl mt-4 max-w-[13ch] text-[42px] font-medium leading-[1.02] text-cal sm:text-[68px]">
-            Estilo atemporal.
+          <h1 className="display-xl mt-4 max-w-[18ch] text-[36px] font-medium leading-[1.04] text-cal sm:text-[58px]">
+            La elegancia radica en la comodidad con la que vistes una prenda.
           </h1>
           <p className="mt-5 max-w-[34rem] text-[16px] leading-relaxed text-cal/95 sm:text-[18px]">
-            Tres prendas hechas a mano — camisa, pantalón y el conjunto de las dos — en{" "}
-            {colores.length} colores teñidos en tandas cortas. Gasa de algodón lavada, botones
-            de coco, nada que caduque a fin de temporada.
+            Prendas elaboradas de forma artesanal en Yucatán, México. Estilo
+            elegante y atemporal.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
             <Link
               href="/catalogo"
               className="flex min-h-12 items-center rounded-full bg-cal px-7 text-[15px] font-medium text-tinta transition-colors hover:bg-arena"
             >
-              Ver los {colores.length} colores
+              Ver catálogo
             </Link>
-            <Link
-              href="/nosotros"
-              className="flex min-h-12 items-center rounded-full border border-cal/50 px-7 text-[15px] text-cal transition-colors hover:bg-cal/10"
+          </div>
+          {/* Contacto directo, chico: está a mano sin competir con el
+              botón del catálogo. */}
+          <div className="mt-5 flex flex-wrap items-center gap-2.5 text-[14px] font-medium text-cal">
+            {hayWhatsApp && (
+              <a
+                href={enlaceWhatsApp("Hola, les escribo desde la página de Shaula Tulum.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-cal/35 bg-tinta/55 px-4 backdrop-blur-[2px] transition-colors hover:bg-tinta/80"
+              >
+                <IconoWhatsApp className="h-[18px] w-[18px]" />
+                WhatsApp
+              </a>
+            )}
+            <a
+              href={SITIO.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-cal/35 bg-tinta/55 px-4 backdrop-blur-[2px] transition-colors hover:bg-tinta/80"
             >
-              Cómo trabajamos
-            </Link>
+              <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden focusable="false">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+              @shaula_tulum
+            </a>
           </div>
         </div>
       </section>
 
-      {/* ══ Las tres prendas ══ */}
+      {/* ══ Las prendas ══ */}
       <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
         <p className="eyebrow">Lo que hacemos</p>
         <h2 className="display-md mt-1.5 max-w-[20ch] text-[28px] font-medium leading-tight text-tinta sm:text-[38px]">
-          Tres prendas, y nada más.
+          Una camisa y un pantalón.
         </h2>
         <p className="medida mt-3 text-[15px] leading-relaxed text-sombra">
-          No hay colección nueva cada temporada. Hay una camisa, un pantalón, y el
-          conjunto de los dos — y el trabajo está puesto en el color y en la tela,
-          no en inventar prendas.
+          Pocas prendas, hechas con calma. El trabajo está puesto en el color y en
+          la tela, y cada tanda es distinta de la anterior.
         </p>
 
-        <div className="mt-9 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-9 grid gap-x-6 gap-y-10 sm:grid-cols-2">
           {productos.map((p, i) => <PrendaCard key={p.id} p={p} prioridad={i === 0} />)}
         </div>
       </section>
@@ -236,26 +256,16 @@ export default async function Home() {
             </div>
           ))}
         </div>
+        <a
+          href={SITIO.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex min-h-12 items-center text-[15px] text-tinta underline underline-offset-4 hover:text-madera"
+        >
+          Más looks en nuestro Instagram, @shaula_tulum
+        </a>
       </section>
 
-      {/* ══ Cierre ══ */}
-      <section className="mx-auto max-w-6xl px-5 pb-6 sm:px-8">
-        <div className="rounded-[4px] border border-arena-hondo bg-cal-hondo px-6 py-11 text-center sm:px-12">
-          <h2 className="display-md mx-auto max-w-[20ch] text-[24px] font-medium leading-tight text-tinta sm:text-[32px]">
-            ¿Quieres un color que no está?
-          </h2>
-          <p className="medida mx-auto mt-3 text-[15px] leading-relaxed text-sombra">
-            El teñido es artesanal: casi cualquier tono se puede hacer a pedido, y las
-            tallas también. Escríbenos y lo vemos.
-          </p>
-          <Link
-            href="/contacto"
-            className="mt-7 inline-flex min-h-12 items-center rounded-full bg-madera px-7 text-[15px] font-medium text-cal transition-colors hover:bg-tinta"
-          >
-            Escríbenos
-          </Link>
-        </div>
-      </section>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Producto, Variante } from "@/data/productos";
-import { PRODUCTOS } from "@/data/productos";
+import { PRODUCTOS, formatoPrecio, precioDe, rangoPrecios } from "@/data/productos";
 import {
   contarPorCategoria, fichas, filtrarYOrdenar, hayFiltrosActivos, type Criterios,
 } from "./catalogo-filtros";
@@ -43,15 +43,11 @@ const CATALOGO: Producto[] = [
     nombre: "Pantalón", categoria: "pantalones", tela: "Algodón lavado, textura de arena",
     variantes: [color("Arena"), color("Negro")],
   }),
-  prenda({
-    nombre: "Conjunto", categoria: "conjuntos",
-    variantes: [color("Verde Pistacho")],
-  }),
 ];
 
 describe("fichas", () => {
   it("expande cada prenda en una ficha por color", () => {
-    expect(fichas(CATALOGO)).toHaveLength(6);
+    expect(fichas(CATALOGO)).toHaveLength(5);
   });
 
   it("la clave identifica prenda y color juntos", () => {
@@ -61,7 +57,7 @@ describe("fichas", () => {
 
 describe("filtrarYOrdenar — filtros", () => {
   it("sin criterios devuelve todos los colores de todas las prendas", () => {
-    expect(filtrarYOrdenar(CATALOGO, BASE)).toHaveLength(6);
+    expect(filtrarYOrdenar(CATALOGO, BASE)).toHaveLength(5);
   });
 
   it("filtra por prenda", () => {
@@ -95,10 +91,10 @@ describe("filtrarYOrdenar — filtros", () => {
 });
 
 describe("filtrarYOrdenar — orden", () => {
-  it("por prenda va camisa, pantalón, conjunto — como se viste uno", () => {
+  it("por prenda va camisa y después pantalón — como se viste uno", () => {
     const cats = filtrarYOrdenar(CATALOGO, BASE).map((f) => f.producto.categoria);
     expect(cats).toEqual([
-      "camisas", "camisas", "camisas", "pantalones", "pantalones", "conjuntos",
+      "camisas", "camisas", "camisas", "pantalones", "pantalones",
     ]);
   });
 
@@ -110,7 +106,7 @@ describe("filtrarYOrdenar — orden", () => {
   it("por color ordena alfabéticamente respetando el español", () => {
     const nombres = filtrarYOrdenar(CATALOGO, { ...BASE, orden: "color" }).map((f) => f.variante.nombre);
     expect(nombres[0]).toBe("Arena");
-    expect(nombres[nombres.length - 1]).toBe("Verde Pistacho");
+    expect(nombres[nombres.length - 1]).toBe("Terracota");
   });
 
   it("por color, el mismo color de dos prendas queda junto y en orden de prenda", () => {
@@ -136,7 +132,7 @@ describe("hayFiltrosActivos", () => {
 
   it("detecta búsqueda, prenda y orden cambiado", () => {
     expect(hayFiltrosActivos({ ...BASE, busqueda: "lino" })).toBe(true);
-    expect(hayFiltrosActivos({ ...BASE, categoria: "conjuntos" })).toBe(true);
+    expect(hayFiltrosActivos({ ...BASE, categoria: "pantalones" })).toBe(true);
     expect(hayFiltrosActivos({ ...BASE, orden: "color" })).toBe(true);
   });
 });
@@ -153,8 +149,8 @@ describe("contarPorCategoria", () => {
    si una foto se renombra y alguien se olvida de actualizar el archivo, el
    sitio muestra un cuadro roto. Estos tests miran la forma, no el contenido. */
 describe("el catálogo real", () => {
-  it("son las tres prendas de la casa", () => {
-    expect(PRODUCTOS.map((p) => p.id)).toEqual(["camisa", "pantalon", "conjunto"]);
+  it("son las dos prendas de la casa", () => {
+    expect(PRODUCTOS.map((p) => p.id)).toEqual(["camisa", "pantalon"]);
   });
 
   it("cada color tiene al menos una foto y un hex de seis dígitos", () => {
@@ -181,5 +177,24 @@ describe("el catálogo real", () => {
         expect(v.poster).toMatch(/^\/media\/.+\.jpg$/);
       }
     }
+  });
+});
+
+describe("precios", () => {
+  it("la camisa vale $1,500, salvo la mostaza de gasa que vale $1,400", () => {
+    const camisa = PRODUCTOS.find((p) => p.id === "camisa")!;
+    const precio = (slug: string) => precioDe(camisa, camisa.variantes.find((v) => v.slug === slug)!);
+    expect(precio("negro")).toBe(1500);
+    expect(precio("lila")).toBe(1500);
+    expect(precio("mostaza")).toBe(1400);
+  });
+
+  it("el pantalón vale lo mismo en todos los colores", () => {
+    const pantalon = PRODUCTOS.find((p) => p.id === "pantalon")!;
+    expect(rangoPrecios(pantalon)).toEqual({ min: 1750, max: 1750 });
+  });
+
+  it("se escribe en pesos con separador de miles", () => {
+    expect(formatoPrecio(1750)).toBe("$1,750 MXN");
   });
 });

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MuestraTela from "./MuestraTela";
 import VistaPrevia from "./VistaPrevia";
+import { formatoPrecio, precioDe } from "@/data/productos";
 import type { Ficha } from "@/lib/catalogo-filtros";
 
 /* Una tarjeta del catálogo = una prenda EN UN COLOR.
@@ -26,6 +27,7 @@ export default function FichaColor({
   /* El primer video del color, si lo hay: con el mouse encima la tarjeta
      deja de ser una foto y pasa a ser la tela moviéndose. */
   const video = variante.videos?.[0];
+  const precio = precioDe(producto, variante);
 
   return (
     <Link
@@ -75,6 +77,9 @@ export default function FichaColor({
             {variante.nombre}
           </h3>
           <p className="mt-0.5 text-[13px] text-sombra">{producto.nombre}</p>
+          {precio != null && (
+            <p className="mt-1 text-[14px] tabular-nums text-tinta">{formatoPrecio(precio)}</p>
+          )}
         </div>
       </div>
     </Link>

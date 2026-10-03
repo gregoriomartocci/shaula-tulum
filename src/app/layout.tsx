@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   keywords: [
     "ropa artesanal mexicana", "camisas de algodón hechas a mano",
     "gasa de algodón", "ropa de Tulum", "camisa cuello mao hombre",
-    "pantalón de pinzas algodón", "conjunto camisa y pantalón",
+    "pantalón de pinzas algodón",
     "ropa teñida a mano", "moda artesanal México", "ropa de lino y algodón Tulum",
   ],
   alternates: { canonical: "/" },

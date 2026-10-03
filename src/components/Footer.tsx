@@ -12,8 +12,8 @@ export default function Footer() {
             <p className="font-display text-[20px] font-medium text-tinta">Shaula Tulum</p>
           </div>
           <p className="medida mt-3 text-[14px] leading-relaxed text-sombra">
-            Camisas, pantalones y conjuntos de gasa de algodón, teñidos a mano
-            en el Caribe mexicano.
+            Camisas y pantalones de gasa de algodón, teñidos a mano en el
+            Caribe mexicano.
           </p>
         </div>
 
@@ -24,7 +24,6 @@ export default function Footer() {
               ["/catalogo", "Ver todo"],
               ["/catalogo?categoria=camisas", "Camisas"],
               ["/catalogo?categoria=pantalones", "Pantalones"],
-              ["/catalogo?categoria=conjuntos", "Conjuntos"],
             ].map(([href, txt]) => (
               <li key={href}>
                 <Link href={href} className="block py-2.5 text-sombra transition-colors hover:text-madera">
@@ -39,6 +38,7 @@ export default function Footer() {
           <p className="eyebrow">La casa</p>
           <ul className="mt-1 text-[14px]">
             <li><Link href="/nosotros" className="block py-2.5 text-sombra transition-colors hover:text-madera">Quiénes somos</Link></li>
+            <li><Link href="/lifestyle" className="block py-2.5 text-sombra transition-colors hover:text-madera">Lifestyle</Link></li>
             <li><Link href="/contacto" className="block py-2.5 text-sombra transition-colors hover:text-madera">Contacto</Link></li>
             <li>
               <a

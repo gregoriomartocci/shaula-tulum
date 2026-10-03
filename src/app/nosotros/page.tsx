@@ -3,29 +3,39 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Quiénes somos — ropa hecha a mano en Tulum",
+  title: "Quiénes somos — moda lenta hecha a mano en Tulum",
   description:
-    "Cómo se hace la ropa de Shaula Tulum: gasa de algodón lavada, teñido artesanal en tandas cortas y botones de coco cosidos a mano en Quintana Roo.",
+    "Shaula Tulum nació en Tulum en 2022: ropa elegante y cómoda de textiles orgánicos, hecha a mano, " +
+    "en colores tierra y en piezas que no se repiten. Moda lenta para el calor del Caribe y de la ciudad.",
   alternates: { canonical: "/nosotros" },
   openGraph: { type: "article", url: "/nosotros", title: "Quiénes somos · Shaula Tulum" },
 };
 
-const HITOS = [
+/* Las necesidades que la marca vino a cubrir: por qué existe. */
+const NECESIDADES = [
   {
-    k: "Dónde",
-    t: "Tulum, Quintana Roo",
-    d: "La marca es de aquí y la ropa está pensada para este clima: treinta y cuatro grados, humedad y sol directo. Todo lo que no sobrevive a eso no entra al catálogo.",
+    k: "Elegancia",
+    t: "Elegante porque es cómoda",
+    d: "Una prenda es elegante cuando te sientes bien en ella. Shaula nació para que no haya que elegir entre arreglarse y estar a gusto.",
   },
   {
-    k: "Con qué",
-    t: "Gasa de algodón lavada",
-    d: "Algodón, y nada más. La gasa se lava antes de cortar, así la prenda ya llegó a su medida final y no encoge después. Los botones son de coco.",
+    k: "Clima",
+    t: "Hecha para el calor y la humedad",
+    d: "Telas que respiran y cortes holgados para el Caribe mexicano, y para el verano de las grandes ciudades, donde el calor aprieta igual.",
   },
   {
-    k: "Cómo",
-    t: "Teñido a mano, en tandas cortas",
-    d: "Cada color sale de una tanda chica de teñido. Dos tandas del mismo tono nunca dan exactamente igual, y esa diferencia mínima entre una prenda y otra es la firma de que lo hizo alguien.",
+    k: "Tiempo",
+    t: "Ropa que no pasa de moda",
+    d: "Un estilo atemporal y versátil: la misma camisa va a la playa, a una cena o a la oficina, y sigue sirviendo dentro de varios veranos.",
   },
+];
+
+/* Lo que la marca defiende: cómo hace las cosas. */
+const VALORES = [
+  ["Textiles orgánicos", "Trabajamos principalmente con fibras naturales y orgánicas, que respiran, se sienten bien sobre la piel y envejecen con dignidad."],
+  ["Hecho a mano", "La producción es artesanal: cada prenda pasa por las manos de alguien, y se nota en los detalles."],
+  ["Moda lenta", "Proponemos comprar menos y mejor. Consumir de manera consciente es la forma de cuidar el medio ambiente de la contaminación que deja el fast fashion."],
+  ["Piezas que no se repiten", "No hay stock permanente: las prendas, los estilos y las telas van cambiando. Lo que hoy está en el catálogo quizá no vuelva, y eso hace especial cada prenda."],
 ];
 
 export default function NosotrosPage() {
@@ -42,7 +52,7 @@ export default function NosotrosPage() {
         <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-24 sm:px-8 sm:pb-16">
           <p className="eyebrow inline-flex items-center rounded-full bg-tinta/80 px-3.5 py-1.5 text-cal backdrop-blur-[2px]">Quiénes somos</p>
           <h1 className="display-xl mt-4 max-w-[16ch] text-[36px] font-medium leading-[1.04] text-cal sm:text-[56px]">
-            Una casa chica, a propósito.
+            Un estilo que busca resaltar tu esencia natural.
           </h1>
         </div>
       </section>
@@ -50,42 +60,69 @@ export default function NosotrosPage() {
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <div className="medida space-y-5 text-[16px] leading-relaxed text-tinta">
           <p>
-            Shaula Tulum empezó por una molestia concreta: en el Caribe hace treinta y
-            cuatro grados y casi toda la ropa que se vende está hecha de plástico.
-            Poliéster, elastano, mezclas que no respiran y que a los dos veranos se
-            ponen feas de una manera que no tiene arreglo.
+            En Shaula creemos que la verdadera elegancia está en la comodidad de una
+            prenda y en cómo nos hace sentir, más que en lo estético. Por eso no
+            seguimos la corriente de la moda contemporánea, que limita y condiciona:
+            buscamos lo contrario, que cada quien resalte su propia esencia.
           </p>
           <p>
-            La respuesta fue quedarse con lo mínimo: una camisa, un pantalón, y el
-            conjunto de los dos. Nada de colecciones nuevas cada tres meses. Todo el
-            trabajo está puesto en la tela y en el color, que es lo que se toca y lo
-            que se ve.
+            La marca nació en Tulum en 2022 con esa idea: vestir con ropa elegante y
+            confortable a la vez. Trabajamos principalmente con textiles orgánicos y
+            una producción artesanal, hecha a mano.
           </p>
           <p>
-            La gasa de algodón se arruga, y eso no es un defecto: es la prueba de que
-            no tiene sintético adentro. Se ablanda con cada lavada en vez de gastarse,
-            así que la camisa del tercer verano cae mejor que la del primero.
+            Son prendas de estilo atemporal y versátil, que acompañan a quien las
+            lleva sin robarle protagonismo. De raíz masculina pero sin etiquetas,
+            cualquiera puede hacerlas suyas. Son frescas para el calor y la humedad
+            del Caribe mexicano, y también para el ritmo de las grandes ciudades. Los
+            colores tierra invitan a bajar el ritmo y a sentirse parte del entorno.
+          </p>
+          <p>
+            Creemos en la moda lenta, el <em>slow fashion</em>: comprar menos, elegir
+            con conciencia y cuidar el medio ambiente frente a la contaminación que
+            deja el <em>fast fashion</em>. Por eso no tenemos stock permanente; las
+            prendas, los estilos y las telas van cambiando, y cada pieza tiene algo
+            de única.
           </p>
         </div>
       </section>
 
       <section className="border-y border-arena bg-cal-hondo">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
-          <div className="grid gap-10 sm:grid-cols-3">
-            {HITOS.map((h) => (
-              <div key={h.k}>
-                <p className="eyebrow">{h.k}</p>
-                <h2 className="mt-1.5 font-display text-[21px] leading-snug text-tinta">{h.t}</h2>
-                <p className="mt-2.5 text-[14px] leading-relaxed text-sombra">{h.d}</p>
+          <p className="eyebrow">Por qué existimos</p>
+          <h2 className="display-md mt-1.5 max-w-[24ch] text-[27px] leading-tight text-tinta sm:text-[32px]">
+            Lo que vinimos a resolver.
+          </h2>
+          <div className="mt-8 grid gap-10 sm:grid-cols-3">
+            {NECESIDADES.map((n) => (
+              <div key={n.k}>
+                <p className="eyebrow">{n.k}</p>
+                <h3 className="mt-1.5 font-display text-[21px] leading-snug text-tinta">{n.t}</h3>
+                <p className="mt-2.5 text-[14px] leading-relaxed text-sombra">{n.d}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+        <p className="eyebrow">Nuestros valores</p>
+        <h2 className="display-md mt-1.5 max-w-[24ch] text-[27px] leading-tight text-tinta sm:text-[32px]">
+          Cómo hacemos las cosas.
+        </h2>
+        <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {VALORES.map(([t, d]) => (
+            <div key={t} className="border-t border-arena pt-4">
+              <h3 className="font-display text-[18px] text-tinta">{t}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-sombra">{d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Dos fotos de taller: la pila doblada y el detalle del botón, que es
           donde se ve que hay mano y no máquina. */}
-      <section className="mx-auto max-w-6xl px-5 pt-16 sm:px-8">
+      <section className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           {[
             { src: "/media/camisas-dobladas-4.jpg", alt: "Camisas dobladas en tonos verde, mostaza y rosa" },

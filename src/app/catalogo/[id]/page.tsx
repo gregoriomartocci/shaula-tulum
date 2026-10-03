@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import GaleriaPrenda from "@/components/GaleriaPrenda";
 import PrendaCard from "@/components/PrendaCard";
 import DatosEstructurados from "@/components/DatosEstructurados";
-import { CATEGORIAS, coloresDe, videosDe, type Producto } from "@/data/productos";
+import { CATEGORIAS, coloresDe, precioDe, videosDe, type Producto } from "@/data/productos";
 import { getProducto, getProductos } from "@/lib/catalogo";
 import { BASE, SITIO, url } from "@/lib/sitio";
 
@@ -41,9 +41,9 @@ export async function generateMetadata(
 /* La prenda, en el vocabulario de los buscadores. Los colores van como
    variantes del mismo producto, que es lo que son.
 
-   Sin `offers` a propósito: no hay lista de precios publicada, y un precio
-   inventado en los datos estructurados es exactamente la clase de cosa por
-   la que Google penaliza una tienda. El día que haya precios, se agrega. */
+   `offers` solo en los colores con precio cargado: un precio inventado en
+   los datos estructurados es exactamente la clase de cosa por la que
+   Google penaliza una tienda. */
 function comoProducto(p: Producto) {
   return {
     "@context": "https://schema.org",
@@ -65,6 +65,14 @@ function comoProducto(p: Producto) {
       size: p.talles,
       image: v.fotos.map((f) => url(f)),
       url: url(`/catalogo/${p.id}?color=${v.slug}`),
+      ...(precioDe(p, v) != null && {
+        offers: {
+          "@type": "Offer",
+          price: precioDe(p, v),
+          priceCurrency: "MXN",
+          url: url(`/catalogo/${p.id}?color=${v.slug}`),
+        },
+      }),
     })),
   };
 }
